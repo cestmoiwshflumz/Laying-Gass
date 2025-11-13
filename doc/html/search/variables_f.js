@@ -1,0 +1,20 @@
+var searchData=
+[
+  ['score_0',['score',['../class_player.html#ace6abae8d66534ad0a1fd6458f786a6e',1,'Player::score'],['../struct_raylib_renderer_1_1_player_snapshot.html#a90373f2f8baf5787fe76f2bf90837272',1,'RaylibRenderer::PlayerSnapshot::score']]],
+  ['shape_1',['shape',['../struct_l_g_placed_tile.html#ae179738f023096cd933a7fcf4ec317da',1,'LGPlacedTile::shape'],['../struct_raylib_renderer_1_1_placement_result.html#adf229a7f690682a341ba28f5dc42582c',1,'RaylibRenderer::PlacementResult::shape'],['../struct_raylib_renderer_1_1_tile_preview.html#a083ded7ebc67bc7ad22b67dc5343acee',1,'RaylibRenderer::TilePreview::shape'],['../struct_tile.html#aa1db69a3ba7f13e4f25dab8ce57ce410',1,'Tile::shape']]],
+  ['shapeindex_2',['shapeIndex',['../struct_l_g_placed_tile.html#ab1a3e10cc080f7af221a2efbe6803ac5',1,'LGPlacedTile']]],
+  ['sidebarwidth_3',['sidebarWidth',['../class_raylib_renderer.html#a9441c8bc6474ecb37c592a1a43a8c33d',1,'RaylibRenderer']]],
+  ['size_4',['size',['../class_board.html#aedef7105f0accc0949b601afa97e9678',1,'Board']]],
+  ['startcells_5',['startCells',['../class_board.html#adb3011a9ce219f0113ccae46866263f6',1,'Board']]],
+  ['statemutex_6',['stateMutex',['../class_raylib_renderer.html#a80f613febd5ff018efc7337db58d994e',1,'RaylibRenderer']]],
+  ['steals_7',['steals',['../struct_raylib_renderer_1_1_player_snapshot.html#ac246b51665e1b055f757eacc509f832a',1,'RaylibRenderer::PlayerSnapshot']]],
+  ['stealtokens_8',['stealTokens',['../class_player.html#a19e77d998444e142b483af52ac7e25a5',1,'Player']]],
+  ['stone_9',['stone',['../class_raylib_renderer.html#a018e50f1a734927afec7a3462fe218a4',1,'RaylibRenderer']]],
+  ['stoneowners_10',['stoneOwners',['../class_board.html#a6e90e6accc4a8bb5a79c29b80a95b790',1,'Board']]],
+  ['stones_11',['stones',['../class_player.html#a2ed723203f33bb3fa388d166f80bf36c',1,'Player::stones'],['../struct_raylib_renderer_1_1_player_snapshot.html#a1f21b916032640e674d1b76f5a93c7e4',1,'RaylibRenderer::PlayerSnapshot::stones']]],
+  ['stonetexture_12',['stoneTexture',['../class_raylib_renderer.html#a142355a9d4009242f8e6b72a3e10a976',1,'RaylibRenderer']]],
+  ['success_13',['success',['../struct_raylib_renderer_1_1_placement_result.html#a187e26931e2d7d5788bc0b8c8e196304',1,'RaylibRenderer::PlacementResult']]],
+  ['swapcoupons_14',['swapCoupons',['../class_player.html#ad508f4caa144784ac65d0fb9dda49aaa',1,'Player']]],
+  ['swaprequested_15',['swapRequested',['../struct_raylib_renderer_1_1_placement_result.html#ae40c07b24201bc293a6d154c8cf47d32',1,'RaylibRenderer::PlacementResult']]],
+  ['symbol_16',['symbol',['../class_player.html#a01218f5efc53791ed75c77c99fedf0e2',1,'Player::symbol'],['../struct_raylib_renderer_1_1_final_score_entry.html#af3f8b7bb9d9df5ef305821c4268ff791',1,'RaylibRenderer::FinalScoreEntry::symbol'],['../struct_raylib_renderer_1_1_player_snapshot.html#af155a7e28dd00ee09cb3614cac52deeb',1,'RaylibRenderer::PlayerSnapshot::symbol']]]
+];

@@ -1,3 +1,5 @@
+/// \file main.cpp
+/// \brief Point d'entrée de Laying Grass : configure la console et lance la boucle principale.
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
 #define NOGDI

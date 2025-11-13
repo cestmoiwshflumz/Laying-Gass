@@ -1,3 +1,6 @@
+/// \file Board.h
+/// \brief Interface de la grille et des bonus associés.
+
 #ifndef BOARD_H
 #define BOARD_H
 
@@ -35,14 +38,31 @@ public:
      */
     void display() const;
 
-    /**
-     * @brief Pose une tuile après validation (mise à jour définitive de la grille).
-     * @return true si toutes les cases du motif ont été appliquées.
+    /*!
+     * @brief Pose une tuile sur la grille après vérification locale.
+     *
+     * Cette méthode doit être appelée après `canPlaceTile`. Elle parcourt la matrice
+     * `tileShape` et copie le symbole du joueur dans chacune des cases cibles.
+     *
+     * @param x Colonne (origine) où placer le coin supérieur gauche de la tuile.
+     * @param y Ligne (origine) où placer le coin supérieur gauche de la tuile.
+     * @param tileShape Matrice binaire représentant la forme normalisée.
+     * @param playerSymbol Symbole ASCII du joueur propriétaire.
+     *
+     * @return `true` si toutes les cellules ont été posées, `false` en cas d'échec (collision).
      */
     bool placeTile(int x, int y, const std::vector<std::vector<int>>& tileShape, char playerSymbol);
 
-    /**
-     * @brief Vérifie si une tuile peut être posée aux coordonnées données sans mutation.
+    /*!
+     * @brief Vérifie hors mutation si un motif peut être placé à une position donnée.
+     *
+     * @param x Colonne (origine) testée.
+     * @param y Ligne (origine) testée.
+     * @param tileShape Matrice de la tuile après rotation éventuelle.
+     * @param playerSymbol Symbole du joueur qui tente la pose.
+     *
+     * @return `true` si toutes les cases restent dans la grille, ne chevauchent pas un adversaire
+     *         et respectent l'adjacence requise.
      */
     bool canPlaceTile(int x, int y, const std::vector<std::vector<int>>& tileShape, char playerSymbol) const;
 
@@ -86,8 +106,11 @@ public:
      */
     void placeBonusSquares(int numPlayers);
 
-    /**
-     * @brief Retourne les bonus complétés par @p playerSymbol sur le tour courant.
+    /*!
+     * @brief Retourne les bonus complétés par @p playerSymbol pour le tour en cours.
+     *
+     * @param playerSymbol Symbole du joueur dont les cases viennent d'être posées.
+     * @return Liste des positions et types de bonus à traiter par `Game`.
      */
     std::vector<BonusClaim> claimCompletedBonuses(char playerSymbol);
 

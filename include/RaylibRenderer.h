@@ -1,3 +1,6 @@
+/// \file RaylibRenderer.h
+/// \brief Déclaration du renderer Raylib et de ses structures auxiliaires.
+
 #ifndef RAYLIB_RENDERER_H
 #define RAYLIB_RENDERER_H
 
@@ -68,8 +71,17 @@ public:
                      const Tile* currentTile,
                      const Tile* nextTile);
 
-    /**
-     * @brief Bloque jusqu'à ce que le joueur finalise le placement d'une tuile.
+    /*!
+     * @brief Lance un mode interactif permettant au joueur de poser une tuile.
+     *
+     * @param board          Grille actuelle (pour la prévisualisation).
+     * @param currentPlayer  Joueur actif : sert à afficher les ressources/infos.
+     * @param tile           Tuile courante (déjà tirée).
+     * @param nextTile       Tuile à venir (peek) ou `nullptr`.
+     * @param allowSwap      Indique si le bouton d'échange doit être affiché.
+     *
+     * @return Un `PlacementResult` qui décrit la décision du joueur (pose validée,
+     *         annulation ou demande d'échange).
      */
     PlacementResult requestTilePlacement(const Board& board,
                                          const Player& currentPlayer,

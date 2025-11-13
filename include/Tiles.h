@@ -1,3 +1,6 @@
+/// \file Tiles.h
+/// \brief Structures et classe utilitaires pour la gestion des tuiles.
+
 #ifndef TILES_H
 #define TILES_H
 
@@ -37,8 +40,13 @@ public:
 private:
     std::vector<Tile> tiles;  //!< Stockage interne des formes.
 
-    /**
-     * @brief Parse et normalise le fichier JSON pour remplir @p tiles.
+    /*!
+     * @brief Charge le JSON des tuiles puis normalise chaque matrice.
+     *
+     * @param filename Chemin vers `data/tiles.json`.
+     *
+     * Cette routine contrôle la présence des clés attendues, met à l'échelle
+     * les matrices (suppression des lignes/colonnes vides) puis remplit `tiles`.
      */
     void loadTiles(const std::string& filename);
 };

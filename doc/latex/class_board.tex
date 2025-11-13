@@ -1,0 +1,149 @@
+\doxysection{Board Class Reference}
+\hypertarget{class_board}{}\label{class_board}\index{Board@{Board}}
+
+
+Représente la grille carrée sur laquelle les joueurs placent leurs tuiles.  
+
+
+
+
+{\ttfamily \#include $<$Board.\+h$>$}
+
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{struct_board_1_1_bonus_claim}{Bonus\+Claim}}
+\begin{DoxyCompactList}\small\item\em Événement retourné lorsque des cases bonus ont été complétées. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_board_aaf2ebde220b021345f6e319057ed7357}\label{class_board_aaf2ebde220b021345f6e319057ed7357} 
+{\bfseries Board} (int num\+Players)
+\begin{DoxyCompactList}\small\item\em Construit une grille adaptée au nombre de joueurs (20x20 ou 30x30). \end{DoxyCompactList}\item 
+\Hypertarget{class_board_a21ee226fb2f36a5b8b7ee480bdd34ff1}\label{class_board_a21ee226fb2f36a5b8b7ee480bdd34ff1} 
+void {\bfseries display} () const
+\begin{DoxyCompactList}\small\item\em Affiche la grille en mode texte (debug/console). \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_board_a6797631516348d95e54f860765719db5}{place\+Tile}} (int x, int y, const std\+::vector$<$ std\+::vector$<$ int $>$ $>$ \&tile\+Shape, char player\+Symbol)
+\begin{DoxyCompactList}\small\item\em Pose une tuile sur la grille après vérification locale. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_board_a4d695822aa6ca26d12b56a6aeb6792b8}{can\+Place\+Tile}} (int x, int y, const std\+::vector$<$ std\+::vector$<$ int $>$ $>$ \&tile\+Shape, char player\+Symbol) const
+\begin{DoxyCompactList}\small\item\em Vérifie hors mutation si un motif peut être placé à une position donnée. \end{DoxyCompactList}\item 
+\Hypertarget{class_board_a1229b9c70bf61df290f6a2797253fe5b}\label{class_board_a1229b9c70bf61df290f6a2797253fe5b} 
+bool {\bfseries has\+Valid\+Placement} (const std\+::vector$<$ std\+::vector$<$ int $>$ $>$ \&tile\+Shape, char player\+Symbol) const
+\begin{DoxyCompactList}\small\item\em Teste l\textquotesingle{}existence d\textquotesingle{}au moins une position valide pour la tuile. \end{DoxyCompactList}\item 
+\Hypertarget{class_board_a924fedf139d058e14827b370f50ed0c2}\label{class_board_a924fedf139d058e14827b370f50ed0c2} 
+bool {\bfseries place\+Stone} (int x, int y, char owner)
+\begin{DoxyCompactList}\small\item\em Place une pierre bloquante appartenant à {\ttfamily owner}. \end{DoxyCompactList}\item 
+\Hypertarget{class_board_a72fbd999c7411d051ff3bf4d568f8244}\label{class_board_a72fbd999c7411d051ff3bf4d568f8244} 
+int {\bfseries get\+Size} () const
+\begin{DoxyCompactList}\small\item\em Taille actuelle de la grille (généralement 20 ou 30). \end{DoxyCompactList}\item 
+\Hypertarget{class_board_a14b0689fd328f1157071152f6f1cd097}\label{class_board_a14b0689fd328f1157071152f6f1cd097} 
+const std\+::vector$<$ std\+::vector$<$ char $>$ $>$ \& {\bfseries get\+Grid} () const
+\begin{DoxyCompactList}\small\item\em Retourne une vue sur la grille des symboles. \end{DoxyCompactList}\item 
+\Hypertarget{class_board_a885da5b4202bd90b1f5f962773589f94}\label{class_board_a885da5b4202bd90b1f5f962773589f94} 
+const std\+::vector$<$ std\+::vector$<$ \mbox{\hyperlink{_l_g_shared_8h_afced3db3d7defdaffa32f9386e24342b}{LGBonus}} $>$ $>$ \& {\bfseries get\+Bonuses} () const
+\begin{DoxyCompactList}\small\item\em Retourne la couche des bonus (même dimensions que la grille). \end{DoxyCompactList}\item 
+\Hypertarget{class_board_add80ae37d9b777ece3bee45bfa844b57}\label{class_board_add80ae37d9b777ece3bee45bfa844b57} 
+const std\+::unordered\+\_\+map$<$ char, std\+::pair$<$ int, int $>$ $>$ \& {\bfseries get\+Start\+Cells} () const
+\begin{DoxyCompactList}\small\item\em Coordonnées des cases de départ par symbole de joueur. \end{DoxyCompactList}\item 
+\Hypertarget{class_board_a4b3e5787d4f5bd32367faba712d80540}\label{class_board_a4b3e5787d4f5bd32367faba712d80540} 
+void {\bfseries place\+Starting\+Points} (const std\+::vector$<$ char $>$ \&player\+Symbols)
+\begin{DoxyCompactList}\small\item\em Place les cellules de départ (phase initiale). \end{DoxyCompactList}\item 
+\Hypertarget{class_board_adc129f21e89a12c70612ac12bb03ec37}\label{class_board_adc129f21e89a12c70612ac12bb03ec37} 
+void {\bfseries place\+Bonus\+Squares} (int num\+Players)
+\begin{DoxyCompactList}\small\item\em Répartit les bonus selon le nombre de joueurs. \end{DoxyCompactList}\item 
+std\+::vector$<$ \mbox{\hyperlink{struct_board_1_1_bonus_claim}{Bonus\+Claim}} $>$ \mbox{\hyperlink{class_board_a0a4c2018722f360c297b8b44f9b248c2}{claim\+Completed\+Bonuses}} (char player\+Symbol)
+\begin{DoxyCompactList}\small\item\em Retourne les bonus complétés par {\ttfamily player\+Symbol} pour le tour en cours. \end{DoxyCompactList}\item 
+\Hypertarget{class_board_a3be4fad21b8f5dd886d8ff5e1b93bc69}\label{class_board_a3be4fad21b8f5dd886d8ff5e1b93bc69} 
+void {\bfseries clear\+Cells} (const std\+::vector$<$ std\+::pair$<$ int, int $>$ $>$ \&cells)
+\begin{DoxyCompactList}\small\item\em Vide explicitement certaines cellules (utilisé lors d\textquotesingle{}un vol). \end{DoxyCompactList}\item 
+\Hypertarget{class_board_a27209c18c47c97a2dd6c4b2a732f96b5}\label{class_board_a27209c18c47c97a2dd6c4b2a732f96b5} 
+int {\bfseries calculate\+Largest\+Square} (char player\+Symbol) const
+\begin{DoxyCompactList}\small\item\em Calcule la plus grande zone carrée continue contrôlée par le joueur. \end{DoxyCompactList}\item 
+\Hypertarget{class_board_a0ecda54306fbd0611c170c69b3ec5f0c}\label{class_board_a0ecda54306fbd0611c170c69b3ec5f0c} 
+\mbox{\hyperlink{_l_g_shared_8h_afced3db3d7defdaffa32f9386e24342b}{LGBonus}} {\bfseries collect\+Bonus\+At} (int row, int col, char player\+Symbol)
+\begin{DoxyCompactList}\small\item\em Récupère puis annule un bonus présent en (row, col). \end{DoxyCompactList}\item 
+\Hypertarget{class_board_a7379e9d952c4ab12bd8085a6e0dad4b4}\label{class_board_a7379e9d952c4ab12bd8085a6e0dad4b4} 
+bool {\bfseries owns\+Stone\+At} (int x, int y, char player\+Symbol) const
+\begin{DoxyCompactList}\small\item\em Indique si la pierre en (x, y) appartient bien au joueur. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Représente la grille carrée sur laquelle les joueurs placent leurs tuiles. 
+
+La classe s\textquotesingle{}occupe de vérifier les collisions, l\textquotesingle{}adjacence aux territoires, la collecte des bonus et le calcul des zones finales. 
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_board_a4d695822aa6ca26d12b56a6aeb6792b8}\index{Board@{Board}!canPlaceTile@{canPlaceTile}}
+\index{canPlaceTile@{canPlaceTile}!Board@{Board}}
+\doxysubsubsection{\texorpdfstring{canPlaceTile()}{canPlaceTile()}}
+{\footnotesize\ttfamily \label{class_board_a4d695822aa6ca26d12b56a6aeb6792b8} 
+bool Board\+::can\+Place\+Tile (\begin{DoxyParamCaption}\item[{int}]{x}{, }\item[{int}]{y}{, }\item[{const std\+::vector$<$ std\+::vector$<$ int $>$ $>$ \&}]{tile\+Shape}{, }\item[{char}]{player\+Symbol}{}\end{DoxyParamCaption}) const}
+
+
+
+Vérifie hors mutation si un motif peut être placé à une position donnée. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em x} & Colonne (origine) testée. \\
+\hline
+{\em y} & Ligne (origine) testée. \\
+\hline
+{\em tile\+Shape} & Matrice de la tuile après rotation éventuelle. \\
+\hline
+{\em player\+Symbol} & Symbole du joueur qui tente la pose.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+{\ttfamily true} si toutes les cases restent dans la grille, ne chevauchent pas un adversaire et respectent l\textquotesingle{}adjacence requise. 
+\end{DoxyReturn}
+\Hypertarget{class_board_a0a4c2018722f360c297b8b44f9b248c2}\index{Board@{Board}!claimCompletedBonuses@{claimCompletedBonuses}}
+\index{claimCompletedBonuses@{claimCompletedBonuses}!Board@{Board}}
+\doxysubsubsection{\texorpdfstring{claimCompletedBonuses()}{claimCompletedBonuses()}}
+{\footnotesize\ttfamily \label{class_board_a0a4c2018722f360c297b8b44f9b248c2} 
+std\+::vector$<$ \mbox{\hyperlink{struct_board_1_1_bonus_claim}{Board\+::\+Bonus\+Claim}} $>$ Board\+::claim\+Completed\+Bonuses (\begin{DoxyParamCaption}\item[{char}]{player\+Symbol}{}\end{DoxyParamCaption})}
+
+
+
+Retourne les bonus complétés par {\ttfamily player\+Symbol} pour le tour en cours. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em player\+Symbol} & Symbole du joueur dont les cases viennent d\textquotesingle{}être posées. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Liste des positions et types de bonus à traiter par {\ttfamily \doxylink{class_game}{Game}}. 
+\end{DoxyReturn}
+\Hypertarget{class_board_a6797631516348d95e54f860765719db5}\index{Board@{Board}!placeTile@{placeTile}}
+\index{placeTile@{placeTile}!Board@{Board}}
+\doxysubsubsection{\texorpdfstring{placeTile()}{placeTile()}}
+{\footnotesize\ttfamily \label{class_board_a6797631516348d95e54f860765719db5} 
+bool Board\+::place\+Tile (\begin{DoxyParamCaption}\item[{int}]{x}{, }\item[{int}]{y}{, }\item[{const std\+::vector$<$ std\+::vector$<$ int $>$ $>$ \&}]{tile\+Shape}{, }\item[{char}]{player\+Symbol}{}\end{DoxyParamCaption})}
+
+
+
+Pose une tuile sur la grille après vérification locale. 
+
+Cette méthode doit être appelée après {\ttfamily can\+Place\+Tile}. Elle parcourt la matrice {\ttfamily tile\+Shape} et copie le symbole du joueur dans chacune des cases cibles.
+
+
+\begin{DoxyParams}{Parameters}
+{\em x} & Colonne (origine) où placer le coin supérieur gauche de la tuile. \\
+\hline
+{\em y} & Ligne (origine) où placer le coin supérieur gauche de la tuile. \\
+\hline
+{\em tile\+Shape} & Matrice binaire représentant la forme normalisée. \\
+\hline
+{\em player\+Symbol} & Symbole ASCII du joueur propriétaire.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+{\ttfamily true} si toutes les cellules ont été posées, {\ttfamily false} en cas d\textquotesingle{}échec (collision). 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/\mbox{\hyperlink{_board_8h}{Board.\+h}}\item 
+src/\mbox{\hyperlink{_board_8cpp}{Board.\+cpp}}\end{DoxyCompactItemize}

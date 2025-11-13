@@ -1,3 +1,6 @@
+/// \file Player.cpp
+/// \brief Implémentation des opérations sur les joueurs et leurs ressources.
+
 #include "Player.h"
 
 Player::Player(const std::string& name, char symbol)

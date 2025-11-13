@@ -1,0 +1,74 @@
+\doxysection{Board.\+h}
+\hypertarget{_board_8h_source}{}\label{_board_8h_source}\index{include/Board.h@{include/Board.h}}
+\mbox{\hyperlink{_board_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#ifndef\ BOARD\_H}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#define\ BOARD\_H}}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ <iostream>}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ <unordered\_map>}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ <utility>}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#include\ <algorithm>}}
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_l_g_shared_8h}{LGShared.h}}"{}}}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00020\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_board}{Board}}\ \{}
+\DoxyCodeLine{00021\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00025\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_board_1_1_bonus_claim}{BonusClaim}}\ \{}
+\DoxyCodeLine{00026\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{_l_g_shared_8h_afced3db3d7defdaffa32f9386e24342b}{LGBonus}}\ \mbox{\hyperlink{struct_board_1_1_bonus_claim_a7a8a95a6921738852f9c9e04c8ca1d2b}{type}}\{LGBonus::None\};\ \ }
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{struct_board_1_1_bonus_claim_a643a459066becf2d40158ebf82385d6e}{row}}\{0\};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{struct_board_1_1_bonus_claim_a23671da48b74c0e5ee4d1b3a3aa744d0}{col}}\{0\};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00029\ \ \ \ \ \};}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00034\ \ \ \ \ \mbox{\hyperlink{class_board_aaf2ebde220b021345f6e319057ed7357}{Board}}(\textcolor{keywordtype}{int}\ numPlayers);}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00039\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_board_a21ee226fb2f36a5b8b7ee480bdd34ff1}{display}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00054\ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_board_a6797631516348d95e54f860765719db5}{placeTile}}(\textcolor{keywordtype}{int}\ x,\ \textcolor{keywordtype}{int}\ y,\ \textcolor{keyword}{const}\ std::vector<std::vector<int>>\&\ tileShape,\ \textcolor{keywordtype}{char}\ playerSymbol);}
+\DoxyCodeLine{00055\ }
+\DoxyCodeLine{00067\ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_board_a4d695822aa6ca26d12b56a6aeb6792b8}{canPlaceTile}}(\textcolor{keywordtype}{int}\ x,\ \textcolor{keywordtype}{int}\ y,\ \textcolor{keyword}{const}\ std::vector<std::vector<int>>\&\ tileShape,\ \textcolor{keywordtype}{char}\ playerSymbol)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00068\ }
+\DoxyCodeLine{00072\ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_board_a1229b9c70bf61df290f6a2797253fe5b}{hasValidPlacement}}(\textcolor{keyword}{const}\ std::vector<std::vector<int>>\&\ tileShape,\ \textcolor{keywordtype}{char}\ playerSymbol)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00073\ }
+\DoxyCodeLine{00077\ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_board_a924fedf139d058e14827b370f50ed0c2}{placeStone}}(\textcolor{keywordtype}{int}\ x,\ \textcolor{keywordtype}{int}\ y,\ \textcolor{keywordtype}{char}\ owner);}
+\DoxyCodeLine{00078\ }
+\DoxyCodeLine{00082\ \ \ \ \ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{class_board_a72fbd999c7411d051ff3bf4d568f8244}{getSize}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00083\ }
+\DoxyCodeLine{00087\ \ \ \ \ \textcolor{keyword}{const}\ std::vector<std::vector<char>>\&\ \mbox{\hyperlink{class_board_a14b0689fd328f1157071152f6f1cd097}{getGrid}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00088\ }
+\DoxyCodeLine{00092\ \ \ \ \ \textcolor{keyword}{const}\ std::vector<std::vector<LGBonus>>\&\ \mbox{\hyperlink{class_board_a885da5b4202bd90b1f5f962773589f94}{getBonuses}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00093\ }
+\DoxyCodeLine{00097\ \ \ \ \ \textcolor{keyword}{const}\ std::unordered\_map<char,\ std::pair<int,\ int>>\&\ \mbox{\hyperlink{class_board_add80ae37d9b777ece3bee45bfa844b57}{getStartCells}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00098\ }
+\DoxyCodeLine{00102\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_board_a4b3e5787d4f5bd32367faba712d80540}{placeStartingPoints}}(\textcolor{keyword}{const}\ std::vector<char>\&\ playerSymbols);}
+\DoxyCodeLine{00103\ }
+\DoxyCodeLine{00107\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_board_adc129f21e89a12c70612ac12bb03ec37}{placeBonusSquares}}(\textcolor{keywordtype}{int}\ numPlayers);}
+\DoxyCodeLine{00108\ }
+\DoxyCodeLine{00115\ \ \ \ \ std::vector<BonusClaim>\ \mbox{\hyperlink{class_board_a0a4c2018722f360c297b8b44f9b248c2}{claimCompletedBonuses}}(\textcolor{keywordtype}{char}\ playerSymbol);}
+\DoxyCodeLine{00116\ }
+\DoxyCodeLine{00120\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_board_a3be4fad21b8f5dd886d8ff5e1b93bc69}{clearCells}}(\textcolor{keyword}{const}\ std::vector<std::pair<int,\ int>>\&\ cells);}
+\DoxyCodeLine{00121\ }
+\DoxyCodeLine{00125\ \ \ \ \ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{class_board_a27209c18c47c97a2dd6c4b2a732f96b5}{calculateLargestSquare}}(\textcolor{keywordtype}{char}\ playerSymbol)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00126\ }
+\DoxyCodeLine{00130\ \ \ \ \ \mbox{\hyperlink{_l_g_shared_8h_afced3db3d7defdaffa32f9386e24342b}{LGBonus}}\ \mbox{\hyperlink{class_board_a0ecda54306fbd0611c170c69b3ec5f0c}{collectBonusAt}}(\textcolor{keywordtype}{int}\ row,\ \textcolor{keywordtype}{int}\ col,\ \textcolor{keywordtype}{char}\ playerSymbol);}
+\DoxyCodeLine{00131\ }
+\DoxyCodeLine{00135\ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_board_a7379e9d952c4ab12bd8085a6e0dad4b4}{ownsStoneAt}}(\textcolor{keywordtype}{int}\ x,\ \textcolor{keywordtype}{int}\ y,\ \textcolor{keywordtype}{char}\ playerSymbol)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00136\ }
+\DoxyCodeLine{00137\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00138\ \ \ \ \ \textcolor{keywordtype}{int}\ size;}
+\DoxyCodeLine{00139\ \ \ \ \ std::vector<std::vector<char>>\ grid;}
+\DoxyCodeLine{00140\ \ \ \ \ std::vector<std::vector<LGBonus>>\ bonuses;}
+\DoxyCodeLine{00141\ \ \ \ \ std::unordered\_map<char,\ std::pair<int,\ int>>\ startCells;}
+\DoxyCodeLine{00142\ \ \ \ \ std::unordered\_map<int,\ char>\ stoneOwners;}
+\DoxyCodeLine{00143\ }
+\DoxyCodeLine{00144\ \ \ \ \ \textcolor{keywordtype}{bool}\ playerHasTiles(\textcolor{keywordtype}{char}\ playerSymbol)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00145\ \ \ \ \ \textcolor{keywordtype}{bool}\ isAdjacentToPlayerTerritory(\textcolor{keywordtype}{int}\ x,\ \textcolor{keywordtype}{int}\ y,\ \textcolor{keywordtype}{char}\ playerSymbol)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00146\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{char}\ charForBonus(\mbox{\hyperlink{_l_g_shared_8h_afced3db3d7defdaffa32f9386e24342b}{LGBonus}}\ bonus);}
+\DoxyCodeLine{00147\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ isInside(\textcolor{keywordtype}{int}\ x,\ \textcolor{keywordtype}{int}\ y,\ \textcolor{keywordtype}{int}\ size);}
+\DoxyCodeLine{00148\ \};}
+\DoxyCodeLine{00149\ }
+\DoxyCodeLine{00150\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ BOARD\_H}}
+
+\end{DoxyCode}

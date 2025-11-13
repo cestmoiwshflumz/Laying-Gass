@@ -1,3 +1,6 @@
+/// \file Game.h
+/// \brief Déclaration de la classe Game, orchestrateur principal du jeu.
+
 #ifndef GAME_H
 #define GAME_H
 
@@ -26,8 +29,13 @@ public:
      */
     Game(int numPlayers, const std::string& tileFile);
 
-    /**
-     * @brief Lance la boucle de jeu complète (9 tours) et retourne le statut de victoire.
+    /*!
+     * @brief Lance la boucle de jeu complète (9 tours) et retourne l'intention de redémarrage.
+     *
+     * Cette méthode s'occupe d'initialiser le renderer, d'enchaîner les tours,
+     * puis de calculer/afficher les scores finaux.
+     *
+     * @return `true` si les joueurs souhaitent relancer une partie, `false` sinon.
      */
     bool start();
 

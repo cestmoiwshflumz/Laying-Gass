@@ -1,0 +1,114 @@
+\doxysection{Raylib\+Renderer Class Reference}
+\hypertarget{class_raylib_renderer}{}\label{class_raylib_renderer}\index{RaylibRenderer@{RaylibRenderer}}
+
+
+Boucle de rendu Raylib indépendante de la logique métier.  
+
+
+
+
+{\ttfamily \#include $<$Raylib\+Renderer.\+h$>$}
+
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{struct_raylib_renderer_1_1_final_score_entry}{Final\+Score\+Entry}}
+\begin{DoxyCompactList}\small\item\em Structure utilisée lors de l\textquotesingle{}écran de fin pour récapituler les scores. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{struct_raylib_renderer_1_1_placement_result}{Placement\+Result}}
+\begin{DoxyCompactList}\small\item\em Résultat retourné après une phase de placement de tuile. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{struct_raylib_renderer_1_1_stone_result}{Stone\+Result}}
+\begin{DoxyCompactList}\small\item\em Résultat d\textquotesingle{}une phase de placement de pierre. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_raylib_renderer_ad25678e87ca07312b20f215d92f74a1c}{Raylib\+Renderer}} (int board\+Size, int cell\+Size=24)
+\begin{DoxyCompactList}\small\item\em Initialise la fenêtre Raylib et la boucle de rendu. \end{DoxyCompactList}\item 
+\Hypertarget{class_raylib_renderer_ad45805d4634a7cef788db71920d6f8ae}\label{class_raylib_renderer_ad45805d4634a7cef788db71920d6f8ae} 
+void {\bfseries update\+State} (const \mbox{\hyperlink{class_board}{Board}} \&board, const \mbox{\hyperlink{class_player}{Player}} \&current\+Player, const \mbox{\hyperlink{struct_tile}{Tile}} \texorpdfstring{$\ast$}{*}current\+Tile, const \mbox{\hyperlink{struct_tile}{Tile}} \texorpdfstring{$\ast$}{*}next\+Tile)
+\begin{DoxyCompactList}\small\item\em Met à jour les instantanés consommés par le thread de rendu. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{struct_raylib_renderer_1_1_placement_result}{Placement\+Result}} \mbox{\hyperlink{class_raylib_renderer_ac5ff5f7f05b318e881da5c9320902b04}{request\+Tile\+Placement}} (const \mbox{\hyperlink{class_board}{Board}} \&board, const \mbox{\hyperlink{class_player}{Player}} \&current\+Player, const \mbox{\hyperlink{struct_tile}{Tile}} \&tile, const \mbox{\hyperlink{struct_tile}{Tile}} \texorpdfstring{$\ast$}{*}next\+Tile, bool allow\+Swap)
+\begin{DoxyCompactList}\small\item\em Lance un mode interactif permettant au joueur de poser une tuile. \end{DoxyCompactList}\item 
+\Hypertarget{class_raylib_renderer_a9fef67028525d109fa7d9a7f22a17620}\label{class_raylib_renderer_a9fef67028525d109fa7d9a7f22a17620} 
+\mbox{\hyperlink{struct_raylib_renderer_1_1_stone_result}{Stone\+Result}} {\bfseries request\+Stone\+Placement} (const \mbox{\hyperlink{class_board}{Board}} \&board, const \mbox{\hyperlink{class_player}{Player}} \&current\+Player)
+\begin{DoxyCompactList}\small\item\em Démarre une phase de placement de pierre bloquante. \end{DoxyCompactList}\item 
+\Hypertarget{class_raylib_renderer_ae9f568d90f10abc19e9dc6780f27cd37}\label{class_raylib_renderer_ae9f568d90f10abc19e9dc6780f27cd37} 
+bool {\bfseries wait\+For\+Restart} ()
+\begin{DoxyCompactList}\small\item\em Attend que le joueur demande une nouvelle partie depuis l\textquotesingle{}écran final. \end{DoxyCompactList}\item 
+\Hypertarget{class_raylib_renderer_ad5f126cdafc1647679ee8434cf4daf66}\label{class_raylib_renderer_ad5f126cdafc1647679ee8434cf4daf66} 
+bool {\bfseries confirm\+Action} (const std\+::string \&title, const std\+::string \&message, const std\+::string \&confirm\+Label="{}Oui"{}, const std\+::string \&cancel\+Label="{}Non"{})
+\begin{DoxyCompactList}\small\item\em Affiche une boîte de dialogue booléenne. \end{DoxyCompactList}\item 
+\Hypertarget{class_raylib_renderer_a987c37a3649c70966427c002c0107032}\label{class_raylib_renderer_a987c37a3649c70966427c002c0107032} 
+int {\bfseries select\+From\+List} (const std\+::string \&title, const std\+::vector$<$ std\+::string $>$ \&options, const std\+::string \&cancel\+Label="{}Annuler"{})
+\begin{DoxyCompactList}\small\item\em Affiche une liste d\textquotesingle{}options textuelles et retourne l\textquotesingle{}index choisi. \end{DoxyCompactList}\item 
+\Hypertarget{class_raylib_renderer_a9a9dc3897dca46653f67d0d03d426f7a}\label{class_raylib_renderer_a9a9dc3897dca46653f67d0d03d426f7a} 
+int {\bfseries select\+Tile} (const std\+::string \&title, const std\+::vector$<$ \mbox{\hyperlink{struct_tile}{Tile}} $>$ \&options, const std\+::string \&cancel\+Label="{}Annuler"{})
+\begin{DoxyCompactList}\small\item\em Variante spécialisée pour sélectionner une tuile à partir d\textquotesingle{}un pool. \end{DoxyCompactList}\item 
+\Hypertarget{class_raylib_renderer_a42f29c3124a4fc453cc72414ec48dc02}\label{class_raylib_renderer_a42f29c3124a4fc453cc72414ec48dc02} 
+void {\bfseries show\+Game\+Over} (const std\+::vector$<$ \mbox{\hyperlink{struct_raylib_renderer_1_1_final_score_entry}{Final\+Score\+Entry}} $>$ \&scores, const std\+::string \&victory\+Rule)
+\begin{DoxyCompactList}\small\item\em Affiche l\textquotesingle{}écran de fin de partie avec le classement. \end{DoxyCompactList}\item 
+\Hypertarget{class_raylib_renderer_a251a9cfa068d611bdf8001a503cf13a9}\label{class_raylib_renderer_a251a9cfa068d611bdf8001a503cf13a9} 
+bool {\bfseries is\+Ready} () const
+\begin{DoxyCompactList}\small\item\em Indique si la fenêtre est prête à recevoir des événements (après init). \end{DoxyCompactList}\item 
+\Hypertarget{class_raylib_renderer_af65e43f9d645ba52595767acd1826276}\label{class_raylib_renderer_af65e43f9d645ba52595767acd1826276} 
+bool {\bfseries is\+Running} () const
+\begin{DoxyCompactList}\small\item\em Retourne true tant que le thread de rendu tourne. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Boucle de rendu Raylib indépendante de la logique métier. 
+
+La classe tourne sur un thread dédié et expose une API synchrone pour demander des placements de tuiles, de pierres ou recueillir des choix UI. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_raylib_renderer_ad25678e87ca07312b20f215d92f74a1c}\index{RaylibRenderer@{RaylibRenderer}!RaylibRenderer@{RaylibRenderer}}
+\index{RaylibRenderer@{RaylibRenderer}!RaylibRenderer@{RaylibRenderer}}
+\doxysubsubsection{\texorpdfstring{RaylibRenderer()}{RaylibRenderer()}}
+{\footnotesize\ttfamily \label{class_raylib_renderer_ad25678e87ca07312b20f215d92f74a1c} 
+Raylib\+Renderer\+::\+Raylib\+Renderer (\begin{DoxyParamCaption}\item[{int}]{board\+Size}{, }\item[{int}]{cell\+Size}{ = {\ttfamily 24}}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [explicit]}}
+
+
+
+Initialise la fenêtre Raylib et la boucle de rendu. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em board\+Size} & Taille du plateau (20 ou 30 cases). \\
+\hline
+{\em cell\+Size} & Taille des cellules en pixels (défaut\+: 24px). \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_raylib_renderer_ac5ff5f7f05b318e881da5c9320902b04}\index{RaylibRenderer@{RaylibRenderer}!requestTilePlacement@{requestTilePlacement}}
+\index{requestTilePlacement@{requestTilePlacement}!RaylibRenderer@{RaylibRenderer}}
+\doxysubsubsection{\texorpdfstring{requestTilePlacement()}{requestTilePlacement()}}
+{\footnotesize\ttfamily \label{class_raylib_renderer_ac5ff5f7f05b318e881da5c9320902b04} 
+\mbox{\hyperlink{struct_raylib_renderer_1_1_placement_result}{Raylib\+Renderer\+::\+Placement\+Result}} Raylib\+Renderer\+::request\+Tile\+Placement (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{class_board}{Board}} \&}]{board}{, }\item[{const \mbox{\hyperlink{class_player}{Player}} \&}]{current\+Player}{, }\item[{const \mbox{\hyperlink{struct_tile}{Tile}} \&}]{tile}{, }\item[{const \mbox{\hyperlink{struct_tile}{Tile}} \texorpdfstring{$\ast$}{*}}]{next\+Tile}{, }\item[{bool}]{allow\+Swap}{}\end{DoxyParamCaption})}
+
+
+
+Lance un mode interactif permettant au joueur de poser une tuile. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em board} & Grille actuelle (pour la prévisualisation). \\
+\hline
+{\em current\+Player} & Joueur actif \+: sert à afficher les ressources/infos. \\
+\hline
+{\em tile} & Tuile courante (déjà tirée). \\
+\hline
+{\em next\+Tile} & Tuile à venir (peek) ou {\ttfamily nullptr}. \\
+\hline
+{\em allow\+Swap} & Indique si le bouton d\textquotesingle{}échange doit être affiché.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Un {\ttfamily \doxylink{struct_raylib_renderer_1_1_placement_result}{Placement\+Result}} qui décrit la décision du joueur (pose validée, annulation ou demande d\textquotesingle{}échange). 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/\mbox{\hyperlink{_raylib_renderer_8h}{Raylib\+Renderer.\+h}}\item 
+src/\mbox{\hyperlink{_raylib_renderer_8cpp}{Raylib\+Renderer.\+cpp}}\end{DoxyCompactItemize}

@@ -1,0 +1,26 @@
+var class_player =
+[
+    [ "Player", "class_player.html#a6c455986a7f81686c602bf8c105e4e9d", null ],
+    [ "addStealToken", "class_player.html#aa219f128ccd8f4e89ee8edc1f76dce2a", null ],
+    [ "addStone", "class_player.html#a5f3b59d614fa51d240250bc3d8baff45", null ],
+    [ "addSwapCoupon", "class_player.html#aaa9d2588a91214ed70d99f10c9ff5fe9", null ],
+    [ "getName", "class_player.html#a548c3c4307feda9d702f8c4d0d8daa7c", null ],
+    [ "getScore", "class_player.html#acbdb2bae8d732157af0ca5f5438a2b63", null ],
+    [ "getStealTokens", "class_player.html#a0335f47cacee803e5dca34980ccf540b", null ],
+    [ "getStones", "class_player.html#ad3345afbe89dc32173d0a9d94209b7b0", null ],
+    [ "getSwapCoupons", "class_player.html#a832787932c61bbc494db0eff4f54a9b6", null ],
+    [ "getSymbol", "class_player.html#acafb522e729c2fe951550f09809e075c", null ],
+    [ "hasStealToken", "class_player.html#a4e04f5f8a6f08b45f3a4e7f1f44faa08", null ],
+    [ "hasStone", "class_player.html#ac20a1d2a0d909aaa67cfa2cdab63a8e0", null ],
+    [ "hasSwapCoupon", "class_player.html#a1d6a91419457494806da6e837190c9a6", null ],
+    [ "incrementScore", "class_player.html#ab81df21d03f5a9389a65e5281a2989ce", null ],
+    [ "useStealToken", "class_player.html#a2c6d2e0b6a4be815f1b880eac2fd2944", null ],
+    [ "useStone", "class_player.html#ae7841c68c947def4f19ae7788ab7362a", null ],
+    [ "useSwapCoupon", "class_player.html#a7c997f1d67a1b4c68b7d347524e5b910", null ],
+    [ "name", "class_player.html#af9c920fabaafdeb7961a645315b521ff", null ],
+    [ "score", "class_player.html#ace6abae8d66534ad0a1fd6458f786a6e", null ],
+    [ "stealTokens", "class_player.html#a19e77d998444e142b483af52ac7e25a5", null ],
+    [ "stones", "class_player.html#a2ed723203f33bb3fa388d166f80bf36c", null ],
+    [ "swapCoupons", "class_player.html#ad508f4caa144784ac65d0fb9dda49aaa", null ],
+    [ "symbol", "class_player.html#a01218f5efc53791ed75c77c99fedf0e2", null ]
+];

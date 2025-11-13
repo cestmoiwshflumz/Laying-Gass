@@ -1,3 +1,6 @@
+/// \file Player.h
+/// \brief Déclaration de la classe Player et de ses ressources.
+
 #ifndef PLAYER_H
 #define PLAYER_H
 

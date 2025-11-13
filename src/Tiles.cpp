@@ -1,3 +1,6 @@
+/// \file Tiles.cpp
+/// \brief Chargement des tuiles depuis le JSON et utilitaires associés.
+
 #include "Tiles.h"
 #include <fstream>
 

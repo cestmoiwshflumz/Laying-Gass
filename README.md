@@ -97,8 +97,7 @@ Les informations de jeu (tuiles disponibles, grille de jeu, etc.) sont affichée
    doxygen docs/Doxyfile
    ```
 3. **Consulter la sortie** :
-   - HTML : `docs/build/html/index.html`
-   - XML (pour intégrations CI/CD) : `docs/build/xml`
+   - HTML : `doc/html/index.html`
 
-Le fichier `docs/technical_overview.md` sert de page principale et décrit l'architecture (modules, flux de données, invariants). Ajoutez vos commentaires Doxygen directement dans les en-têtes `include/*.h` pour enrichir cette base lors des prochaines générations.
+Le fichier `docs/mainpage.md` sert de page principale et décrit l'architecture (modules, flux de données, invariants). Ajoutez vos commentaires Doxygen directement dans les en-têtes `include/*.h` (et au besoin dans `src/*.cpp`) pour enrichir cette base lors des prochaines générations. Doxygen ignore automatiquement les sources tierces (`nlohmann`, `raylib`) grâce au fichier de configuration.
 

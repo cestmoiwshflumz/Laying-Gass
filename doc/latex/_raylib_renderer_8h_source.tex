@@ -1,0 +1,234 @@
+\doxysection{Raylib\+Renderer.\+h}
+\hypertarget{_raylib_renderer_8h_source}{}\label{_raylib_renderer_8h_source}\index{include/RaylibRenderer.h@{include/RaylibRenderer.h}}
+\mbox{\hyperlink{_raylib_renderer_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#ifndef\ RAYLIB\_RENDERER\_H}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#define\ RAYLIB\_RENDERER\_H}}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <atomic>}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ <condition\_variable>}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ <mutex>}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#include\ <thread>}}
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#include\ <raylib.h>}}
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_board_8h}{Board.h}}"{}}}
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_player_8h}{Player.h}}"{}}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_tiles_8h}{Tiles.h}}"{}}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00024\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_raylib_renderer}{RaylibRenderer}}\ \{}
+\DoxyCodeLine{00025\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00029\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_raylib_renderer_1_1_placement_result}{PlacementResult}}\ \{}
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{struct_raylib_renderer_1_1_placement_result_a187e26931e2d7d5788bc0b8c8e196304}{success}}\{\textcolor{keyword}{false}\};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{struct_raylib_renderer_1_1_placement_result_af8e5cf44eb47856d1a8cf2924d7e7078}{cancelled}}\{\textcolor{keyword}{false}\};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{struct_raylib_renderer_1_1_placement_result_ae40c07b24201bc293a6d154c8cf47d32}{swapRequested}}\{\textcolor{keyword}{false}\};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{struct_raylib_renderer_1_1_placement_result_a15e0691fb53f4ba5db20c4b9b3dac7a1}{x}}\{0\};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{struct_raylib_renderer_1_1_placement_result_ac7dfd47fdadd7590b96677b382c9bb03}{y}}\{0\};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00035\ \ \ \ \ \ \ \ \ std::vector<std::vector<int>>\ \mbox{\hyperlink{struct_raylib_renderer_1_1_placement_result_adf229a7f690682a341ba28f5dc42582c}{shape}};\ \ \ \ \ \ \ }
+\DoxyCodeLine{00036\ \ \ \ \ \};}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00041\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_raylib_renderer_1_1_stone_result}{StoneResult}}\ \{}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ placed\{\textcolor{keyword}{false}\};}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ x\{0\};}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ y\{0\};}
+\DoxyCodeLine{00045\ \ \ \ \ \};}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00050\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_raylib_renderer_1_1_final_score_entry}{FinalScoreEntry}}\ \{}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ std::string\ name;}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}\ symbol\{\textcolor{charliteral}{'A'}\};}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ territory\{0\};}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ largestSquare\{0\};}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ winner\{\textcolor{keyword}{false}\};}
+\DoxyCodeLine{00056\ \ \ \ \ \};}
+\DoxyCodeLine{00057\ }
+\DoxyCodeLine{00063\ \ \ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{class_raylib_renderer_ad25678e87ca07312b20f215d92f74a1c}{RaylibRenderer}}(\textcolor{keywordtype}{int}\ boardSize,\ \textcolor{keywordtype}{int}\ cellSize\ =\ 24);}
+\DoxyCodeLine{00064\ \ \ \ \ \mbox{\hyperlink{class_raylib_renderer}{\string~RaylibRenderer}}();}
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00069\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_raylib_renderer_ad45805d4634a7cef788db71920d6f8ae}{updateState}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_board}{Board}}\&\ board,}
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_player}{Player}}\&\ currentPlayer,}
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_tile}{Tile}}*\ currentTile,}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_tile}{Tile}}*\ nextTile);}
+\DoxyCodeLine{00073\ }
+\DoxyCodeLine{00086\ \ \ \ \ \mbox{\hyperlink{struct_raylib_renderer_1_1_placement_result}{PlacementResult}}\ \mbox{\hyperlink{class_raylib_renderer_ac5ff5f7f05b318e881da5c9320902b04}{requestTilePlacement}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_board}{Board}}\&\ board,}
+\DoxyCodeLine{00087\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_player}{Player}}\&\ currentPlayer,}
+\DoxyCodeLine{00088\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_tile}{Tile}}\&\ tile,}
+\DoxyCodeLine{00089\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_tile}{Tile}}*\ nextTile,}
+\DoxyCodeLine{00090\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ allowSwap);}
+\DoxyCodeLine{00091\ }
+\DoxyCodeLine{00095\ \ \ \ \ \mbox{\hyperlink{struct_raylib_renderer_1_1_stone_result}{StoneResult}}\ \mbox{\hyperlink{class_raylib_renderer_a9fef67028525d109fa7d9a7f22a17620}{requestStonePlacement}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_board}{Board}}\&\ board,}
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_player}{Player}}\&\ currentPlayer);}
+\DoxyCodeLine{00097\ }
+\DoxyCodeLine{00101\ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_raylib_renderer_ae9f568d90f10abc19e9dc6780f27cd37}{waitForRestart}}();}
+\DoxyCodeLine{00102\ }
+\DoxyCodeLine{00106\ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_raylib_renderer_ad5f126cdafc1647679ee8434cf4daf66}{confirmAction}}(\textcolor{keyword}{const}\ std::string\&\ title,}
+\DoxyCodeLine{00107\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\&\ message,}
+\DoxyCodeLine{00108\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\&\ confirmLabel\ =\ \textcolor{stringliteral}{"{}Oui"{}},}
+\DoxyCodeLine{00109\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\&\ cancelLabel\ =\ \textcolor{stringliteral}{"{}Non"{}});}
+\DoxyCodeLine{00110\ }
+\DoxyCodeLine{00114\ \ \ \ \ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{class_raylib_renderer_a987c37a3649c70966427c002c0107032}{selectFromList}}(\textcolor{keyword}{const}\ std::string\&\ title,}
+\DoxyCodeLine{00115\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::vector<std::string>\&\ options,}
+\DoxyCodeLine{00116\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\&\ cancelLabel\ =\ \textcolor{stringliteral}{"{}Annuler"{}});}
+\DoxyCodeLine{00117\ }
+\DoxyCodeLine{00121\ \ \ \ \ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{class_raylib_renderer_a9a9dc3897dca46653f67d0d03d426f7a}{selectTile}}(\textcolor{keyword}{const}\ std::string\&\ title,}
+\DoxyCodeLine{00122\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::vector<Tile>\&\ options,}
+\DoxyCodeLine{00123\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\&\ cancelLabel\ =\ \textcolor{stringliteral}{"{}Annuler"{}});}
+\DoxyCodeLine{00124\ }
+\DoxyCodeLine{00128\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_raylib_renderer_a42f29c3124a4fc453cc72414ec48dc02}{showGameOver}}(\textcolor{keyword}{const}\ std::vector<FinalScoreEntry>\&\ scores,}
+\DoxyCodeLine{00129\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\&\ victoryRule);}
+\DoxyCodeLine{00130\ }
+\DoxyCodeLine{00134\ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_raylib_renderer_a251a9cfa068d611bdf8001a503cf13a9}{isReady}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00135\ }
+\DoxyCodeLine{00139\ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_raylib_renderer_af65e43f9d645ba52595767acd1826276}{isRunning}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00140\ }
+\DoxyCodeLine{00141\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00142\ \ \ \ \ \textcolor{keyword}{enum\ class}\ Mode\ \{}
+\DoxyCodeLine{00143\ \ \ \ \ \ \ \ \ Idle,}
+\DoxyCodeLine{00144\ \ \ \ \ \ \ \ \ Placement,}
+\DoxyCodeLine{00145\ \ \ \ \ \ \ \ \ Stone}
+\DoxyCodeLine{00146\ \ \ \ \ \};}
+\DoxyCodeLine{00147\ }
+\DoxyCodeLine{00148\ \ \ \ \ \textcolor{keyword}{enum\ class}\ DialogKind\ \{}
+\DoxyCodeLine{00149\ \ \ \ \ \ \ \ \ None,}
+\DoxyCodeLine{00150\ \ \ \ \ \ \ \ \ Confirm,}
+\DoxyCodeLine{00151\ \ \ \ \ \ \ \ \ List,}
+\DoxyCodeLine{00152\ \ \ \ \ \ \ \ \ TilePicker}
+\DoxyCodeLine{00153\ \ \ \ \ \};}
+\DoxyCodeLine{00154\ }
+\DoxyCodeLine{00155\ \ \ \ \ \textcolor{keyword}{struct\ }PlayerSnapshot\ \{}
+\DoxyCodeLine{00156\ \ \ \ \ \ \ \ \ std::string\ name;}
+\DoxyCodeLine{00157\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}\ symbol\{\textcolor{charliteral}{'A'}\};}
+\DoxyCodeLine{00158\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ score\{0\};}
+\DoxyCodeLine{00159\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ coupons\{0\};}
+\DoxyCodeLine{00160\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ stones\{0\};}
+\DoxyCodeLine{00161\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ steals\{0\};}
+\DoxyCodeLine{00162\ \ \ \ \ \};}
+\DoxyCodeLine{00163\ }
+\DoxyCodeLine{00164\ \ \ \ \ \textcolor{keyword}{struct\ }PlacementState\ \{}
+\DoxyCodeLine{00165\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ active\{\textcolor{keyword}{false}\};}
+\DoxyCodeLine{00166\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ resultReady\{\textcolor{keyword}{false}\};}
+\DoxyCodeLine{00167\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ allowSwap\{\textcolor{keyword}{false}\};}
+\DoxyCodeLine{00168\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ resultSwap\{\textcolor{keyword}{false}\};}
+\DoxyCodeLine{00169\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ resultSuccess\{\textcolor{keyword}{false}\};}
+\DoxyCodeLine{00170\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ resultCancelled\{\textcolor{keyword}{false}\};}
+\DoxyCodeLine{00171\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ resultX\{0\};}
+\DoxyCodeLine{00172\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ resultY\{0\};}
+\DoxyCodeLine{00173\ \ \ \ \ \ \ \ \ std::vector<std::vector<int>>\ workingShape;}
+\DoxyCodeLine{00174\ \ \ \ \ \ \ \ \ std::vector<std::vector<int>>\ resultShape;}
+\DoxyCodeLine{00175\ \ \ \ \ \};}
+\DoxyCodeLine{00176\ }
+\DoxyCodeLine{00177\ \ \ \ \ \textcolor{keyword}{struct\ }StoneState\ \{}
+\DoxyCodeLine{00178\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ active\{\textcolor{keyword}{false}\};}
+\DoxyCodeLine{00179\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ resultReady\{\textcolor{keyword}{false}\};}
+\DoxyCodeLine{00180\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ resultPlaced\{\textcolor{keyword}{false}\};}
+\DoxyCodeLine{00181\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ resultX\{0\};}
+\DoxyCodeLine{00182\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ resultY\{0\};}
+\DoxyCodeLine{00183\ \ \ \ \ \};}
+\DoxyCodeLine{00184\ }
+\DoxyCodeLine{00185\ \ \ \ \ \textcolor{keyword}{struct\ }TilePreview\ \{}
+\DoxyCodeLine{00186\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ \textcolor{keywordtype}{id}\{0\};}
+\DoxyCodeLine{00187\ \ \ \ \ \ \ \ \ std::vector<std::vector<int>>\ shape;}
+\DoxyCodeLine{00188\ \ \ \ \ \};}
+\DoxyCodeLine{00189\ }
+\DoxyCodeLine{00190\ \ \ \ \ \textcolor{keyword}{struct\ }DialogState\ \{}
+\DoxyCodeLine{00191\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ active\{\textcolor{keyword}{false}\};}
+\DoxyCodeLine{00192\ \ \ \ \ \ \ \ \ DialogKind\ kind\{DialogKind::None\};}
+\DoxyCodeLine{00193\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ completed\{\textcolor{keyword}{false}\};}
+\DoxyCodeLine{00194\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ boolResult\{\textcolor{keyword}{false}\};}
+\DoxyCodeLine{00195\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ choice\{-\/1\};}
+\DoxyCodeLine{00196\ \ \ \ \ \ \ \ \ std::string\ title;}
+\DoxyCodeLine{00197\ \ \ \ \ \ \ \ \ std::string\ message;}
+\DoxyCodeLine{00198\ \ \ \ \ \ \ \ \ std::string\ confirmLabel\{\textcolor{stringliteral}{"{}Oui"{}}\};}
+\DoxyCodeLine{00199\ \ \ \ \ \ \ \ \ std::string\ cancelLabel\{\textcolor{stringliteral}{"{}Non"{}}\};}
+\DoxyCodeLine{00200\ \ \ \ \ \ \ \ \ std::vector<std::string>\ options;}
+\DoxyCodeLine{00201\ \ \ \ \ \ \ \ \ std::vector<TilePreview>\ tiles;}
+\DoxyCodeLine{00202\ \ \ \ \ \};}
+\DoxyCodeLine{00203\ }
+\DoxyCodeLine{00204\ \ \ \ \ \textcolor{keyword}{struct\ }DialogRenderResult\ \{}
+\DoxyCodeLine{00205\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ completed\{\textcolor{keyword}{false}\};}
+\DoxyCodeLine{00206\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ boolValue\{\textcolor{keyword}{false}\};}
+\DoxyCodeLine{00207\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ indexValue\{-\/1\};}
+\DoxyCodeLine{00208\ \ \ \ \ \};}
+\DoxyCodeLine{00209\ }
+\DoxyCodeLine{00210\ \ \ \ \ \textcolor{keywordtype}{void}\ renderLoop();}
+\DoxyCodeLine{00211\ \ \ \ \ \textcolor{keywordtype}{void}\ drawIdle(\textcolor{keyword}{const}\ std::vector<std::vector<char>>\&\ grid,}
+\DoxyCodeLine{00212\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ PlayerSnapshot\&\ player,}
+\DoxyCodeLine{00213\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::vector<std::vector<int>>\&\ currentTile,}
+\DoxyCodeLine{00214\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::vector<std::vector<int>>\&\ nextTile,}
+\DoxyCodeLine{00215\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::vector<std::vector<LGBonus>>\&\ bonuses)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00216\ \ \ \ \ \textcolor{keywordtype}{void}\ drawPlacement(\textcolor{keyword}{const}\ std::vector<std::vector<char>>\&\ grid,}
+\DoxyCodeLine{00217\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ PlayerSnapshot\&\ player,}
+\DoxyCodeLine{00218\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::vector<std::vector<int>>\ tileShape,}
+\DoxyCodeLine{00219\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::vector<std::vector<int>>\&\ nextTilePreview,}
+\DoxyCodeLine{00220\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ allowSwap,}
+\DoxyCodeLine{00221\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::vector<std::vector<LGBonus>>\&\ bonuses);}
+\DoxyCodeLine{00222\ \ \ \ \ \textcolor{keywordtype}{void}\ drawStonePlacement(\textcolor{keyword}{const}\ std::vector<std::vector<char>>\&\ grid,}
+\DoxyCodeLine{00223\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ PlayerSnapshot\&\ player,}
+\DoxyCodeLine{00224\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ allowSkip,}
+\DoxyCodeLine{00225\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::vector<std::vector<LGBonus>>\&\ bonuses);}
+\DoxyCodeLine{00226\ \ \ \ \ \textcolor{keywordtype}{bool}\ drawGameOverOverlay(\textcolor{keyword}{const}\ std::vector<FinalScoreEntry>\&\ scores,}
+\DoxyCodeLine{00227\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\&\ ruleText,}
+\DoxyCodeLine{00228\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ allowRestart)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00229\ \ \ \ \ \mbox{\hyperlink{struct_rectangle}{Rectangle}}\ boardArea()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00230\ \ \ \ \ \textcolor{keywordtype}{bool}\ canPlaceLocally(\textcolor{keywordtype}{int}\ x,\ \textcolor{keywordtype}{int}\ y,\ \textcolor{keyword}{const}\ std::vector<std::vector<int>>\&\ tileShape,\ \textcolor{keywordtype}{char}\ playerSymbol,\ \textcolor{keyword}{const}\ std::vector<std::vector<char>>\&\ grid)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00231\ \ \ \ \ \textcolor{keywordtype}{bool}\ canPlaceStone(\textcolor{keywordtype}{int}\ x,\ \textcolor{keywordtype}{int}\ y,\ \textcolor{keyword}{const}\ std::vector<std::vector<char>>\&\ grid)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00232\ \ \ \ \ DialogRenderResult\ drawDialogOverlay(\textcolor{keyword}{const}\ DialogState\&\ dialog,}
+\DoxyCodeLine{00233\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_vector2}{Vector2}}\&\ mouse,}
+\DoxyCodeLine{00234\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ mouseClick,}
+\DoxyCodeLine{00235\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ escapePressed)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00236\ \ \ \ \ \textcolor{keywordtype}{void}\ fulfillDialogResult(\textcolor{keyword}{const}\ DialogRenderResult\&\ result,\ DialogKind\ kind);}
+\DoxyCodeLine{00237\ \ \ \ \ \mbox{\hyperlink{struct_color}{Color}}\ colorForSymbol(\textcolor{keywordtype}{char}\ symbol)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00238\ \ \ \ \ \mbox{\hyperlink{struct_color}{Color}}\ colorForBonus(\mbox{\hyperlink{_l_g_shared_8h_afced3db3d7defdaffa32f9386e24342b}{LGBonus}}\ bonus)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00239\ \ \ \ \ \textcolor{keywordtype}{void}\ drawCellBase(\textcolor{keywordtype}{float}\ x,\ \textcolor{keywordtype}{float}\ y,\ \textcolor{keywordtype}{char}\ cellValue)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00240\ \ \ \ \ \textcolor{keywordtype}{void}\ drawBonusIcon(\textcolor{keywordtype}{float}\ x,\ \textcolor{keywordtype}{float}\ y,\ \mbox{\hyperlink{_l_g_shared_8h_afced3db3d7defdaffa32f9386e24342b}{LGBonus}}\ bonus)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00241\ \ \ \ \ \textcolor{keywordtype}{void}\ loadTextures();}
+\DoxyCodeLine{00242\ \ \ \ \ \textcolor{keywordtype}{void}\ unloadTextures();}
+\DoxyCodeLine{00243\ \ \ \ \ \textcolor{keywordtype}{void}\ signalRestart();}
+\DoxyCodeLine{00244\ \ \ \ \ \textcolor{keywordtype}{void}\ drawTilePreview(\textcolor{keyword}{const}\ std::vector<std::vector<int>>\&\ tileShape,\ \textcolor{keywordtype}{int}\ originX,\ \textcolor{keywordtype}{int}\ originY)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00245\ \ \ \ \ \textcolor{keyword}{static}\ std::vector<std::vector<int>>\ rotateClockwise(\textcolor{keyword}{const}\ std::vector<std::vector<int>>\&\ shape);}
+\DoxyCodeLine{00246\ \ \ \ \ \textcolor{keyword}{static}\ std::vector<std::vector<int>>\ rotateCounterClockwise(\textcolor{keyword}{const}\ std::vector<std::vector<int>>\&\ shape);}
+\DoxyCodeLine{00247\ \ \ \ \ \textcolor{keyword}{static}\ std::vector<std::vector<int>>\ flipHorizontal(\textcolor{keyword}{const}\ std::vector<std::vector<int>>\&\ shape);}
+\DoxyCodeLine{00248\ }
+\DoxyCodeLine{00249\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ boardSize;}
+\DoxyCodeLine{00250\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ cellSize;}
+\DoxyCodeLine{00251\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ sidebarWidth;}
+\DoxyCodeLine{00252\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ margin;}
+\DoxyCodeLine{00253\ }
+\DoxyCodeLine{00254\ \ \ \ \ std::atomic<bool>\ running;}
+\DoxyCodeLine{00255\ \ \ \ \ std::atomic<bool>\ windowReady;}
+\DoxyCodeLine{00256\ \ \ \ \ std::thread\ renderThread;}
+\DoxyCodeLine{00257\ \ \ \ \ \textcolor{keyword}{mutable}\ std::mutex\ stateMutex;}
+\DoxyCodeLine{00258\ \ \ \ \ std::condition\_variable\ placementCv;}
+\DoxyCodeLine{00259\ \ \ \ \ std::condition\_variable\ dialogCv;}
+\DoxyCodeLine{00260\ \ \ \ \ std::condition\_variable\ restartCv;}
+\DoxyCodeLine{00261\ }
+\DoxyCodeLine{00262\ \ \ \ \ Mode\ mode;}
+\DoxyCodeLine{00263\ \ \ \ \ std::vector<std::vector<char>>\ gridSnapshot;}
+\DoxyCodeLine{00264\ \ \ \ \ std::vector<std::vector<LGBonus>>\ bonusSnapshot;}
+\DoxyCodeLine{00265\ \ \ \ \ PlayerSnapshot\ playerSnapshot;}
+\DoxyCodeLine{00266\ \ \ \ \ std::vector<std::vector<int>>\ currentTileSnapshot;}
+\DoxyCodeLine{00267\ \ \ \ \ std::vector<std::vector<int>>\ nextTileSnapshot;}
+\DoxyCodeLine{00268\ \ \ \ \ \textcolor{keywordtype}{bool}\ hasCurrentTile;}
+\DoxyCodeLine{00269\ \ \ \ \ \textcolor{keywordtype}{bool}\ hasNextTile;}
+\DoxyCodeLine{00270\ \ \ \ \ PlacementState\ placement;}
+\DoxyCodeLine{00271\ \ \ \ \ StoneState\ stone;}
+\DoxyCodeLine{00272\ \ \ \ \ DialogState\ dialog;}
+\DoxyCodeLine{00273\ \ \ \ \ \textcolor{keywordtype}{bool}\ gameOverActive\{\textcolor{keyword}{false}\};}
+\DoxyCodeLine{00274\ \ \ \ \ \textcolor{keywordtype}{bool}\ restartButtonActive\{\textcolor{keyword}{false}\};}
+\DoxyCodeLine{00275\ \ \ \ \ \textcolor{keywordtype}{bool}\ restartPressed\{\textcolor{keyword}{false}\};}
+\DoxyCodeLine{00276\ \ \ \ \ std::string\ victoryRuleText;}
+\DoxyCodeLine{00277\ \ \ \ \ std::vector<FinalScoreEntry>\ finalScores;}
+\DoxyCodeLine{00278\ \ \ \ \ std::string\ feedbackMessage;}
+\DoxyCodeLine{00279\ \ \ \ \ \textcolor{keywordtype}{float}\ feedbackTimer;}
+\DoxyCodeLine{00280\ \ \ \ \ \mbox{\hyperlink{struct_texture}{Texture2D}}\ grassTexture\{\};}
+\DoxyCodeLine{00281\ \ \ \ \ \mbox{\hyperlink{struct_texture}{Texture2D}}\ stoneTexture\{\};}
+\DoxyCodeLine{00282\ \ \ \ \ \mbox{\hyperlink{struct_texture}{Texture2D}}\ bonusCouponTexture\{\};}
+\DoxyCodeLine{00283\ \ \ \ \ \mbox{\hyperlink{struct_texture}{Texture2D}}\ bonusStoneTexture\{\};}
+\DoxyCodeLine{00284\ \ \ \ \ \mbox{\hyperlink{struct_texture}{Texture2D}}\ bonusRobberyTexture\{\};}
+\DoxyCodeLine{00285\ \ \ \ \ \textcolor{keywordtype}{bool}\ texturesLoaded\{\textcolor{keyword}{false}\};}
+\DoxyCodeLine{00286\ \};}
+\DoxyCodeLine{00287\ }
+\DoxyCodeLine{00288\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ RAYLIB\_RENDERER\_H}}
+
+\end{DoxyCode}

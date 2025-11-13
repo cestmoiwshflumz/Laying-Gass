@@ -1,3 +1,6 @@
+/// \file Game.cpp
+/// \brief Implémentation de la logique de partie : tours, bonus et scoring.
+
 #include "Game.h"
 #include "RaylibRenderer.h"
 #include <cctype>

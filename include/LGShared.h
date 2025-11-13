@@ -1,6 +1,5 @@
-//
-// Created by Antoine on 12/11/2025.
-//
+/// \file LGShared.h
+/// \brief Structures et états globaux partagés entre les modules.
 
 #ifndef LAYING_GAME_LGSHARED_H
 #define LAYING_GAME_LGSHARED_H

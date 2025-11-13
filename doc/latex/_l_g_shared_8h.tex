@@ -1,0 +1,39 @@
+\doxysection{include/\+LGShared.h File Reference}
+\hypertarget{_l_g_shared_8h}{}\label{_l_g_shared_8h}\index{include/LGShared.h@{include/LGShared.h}}
+
+
+Structures et états globaux partagés entre les modules.  
+
+
+{\ttfamily \#include $<$unordered\+\_\+map$>$}\newline
+{\ttfamily \#include $<$utility$>$}\newline
+{\ttfamily \#include $<$vector$>$}\newline
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{struct_l_g_placed_tile}{LGPlaced\+Tile}}
+\begin{DoxyCompactList}\small\item\em Enregistrement minimal d\textquotesingle{}une tuile posée pour permettre un futur vol. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{_l_g_shared_8h_afced3db3d7defdaffa32f9386e24342b}\label{_l_g_shared_8h_afced3db3d7defdaffa32f9386e24342b} 
+enum class \mbox{\hyperlink{_l_g_shared_8h_afced3db3d7defdaffa32f9386e24342b}{LGBonus}} \{ {\bfseries None}
+, {\bfseries Coupon}
+, {\bfseries Stone}
+, {\bfseries Robbery}
+ \}
+\begin{DoxyCompactList}\small\item\em Types de bonus pouvant apparaître sur la grille. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{_l_g_shared_8h_adbb155cb4e891cab49c669ee1f0215e4}\label{_l_g_shared_8h_adbb155cb4e891cab49c669ee1f0215e4} 
+std\+::unordered\+\_\+map$<$ char, std\+::pair$<$ int, int $>$ $>$ {\bfseries LG\+\_\+\+START\+\_\+\+CELL}
+\begin{DoxyCompactList}\small\item\em Cases de départ par symbole (partagé entre \doxylink{class_game}{Game} et \doxylink{class_board}{Board}). \end{DoxyCompactList}\item 
+\Hypertarget{_l_g_shared_8h_a7696b238d8087a2f8bd7b10d6004f7c3}\label{_l_g_shared_8h_a7696b238d8087a2f8bd7b10d6004f7c3} 
+bool {\bfseries LG\+\_\+\+REQUIRE\+\_\+\+TOUCH\+\_\+\+TO\+\_\+\+START} = false
+\begin{DoxyCompactList}\small\item\em Active l\textquotesingle{}obligation de toucher la zone déjà connectée au départ. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Structures et états globaux partagés entre les modules. 
+

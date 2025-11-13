@@ -1,0 +1,34 @@
+\doxysection{LGPlaced\+Tile Struct Reference}
+\hypertarget{struct_l_g_placed_tile}{}\label{struct_l_g_placed_tile}\index{LGPlacedTile@{LGPlacedTile}}
+
+
+Enregistrement minimal d\textquotesingle{}une tuile posée pour permettre un futur vol.  
+
+
+
+
+{\ttfamily \#include $<$LGShared.\+h$>$}
+
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{struct_l_g_placed_tile_abaca06ce6156b8ef5794c943e29bec0c}\label{struct_l_g_placed_tile_abaca06ce6156b8ef5794c943e29bec0c} 
+char {\bfseries owner} = \textquotesingle{}?\textquotesingle{}
+\begin{DoxyCompactList}\small\item\em Symbole du joueur. \end{DoxyCompactList}\item 
+\Hypertarget{struct_l_g_placed_tile_ab1a3e10cc080f7af221a2efbe6803ac5}\label{struct_l_g_placed_tile_ab1a3e10cc080f7af221a2efbe6803ac5} 
+int {\bfseries shape\+Index} = -\/1
+\begin{DoxyCompactList}\small\item\em Index original dans \doxylink{class_tiles}{Tiles}. \end{DoxyCompactList}\item 
+\Hypertarget{struct_l_g_placed_tile_ae179738f023096cd933a7fcf4ec317da}\label{struct_l_g_placed_tile_ae179738f023096cd933a7fcf4ec317da} 
+std\+::vector$<$ std\+::vector$<$ int $>$ $>$ {\bfseries shape}
+\begin{DoxyCompactList}\small\item\em Matrice normalisée (utilisée lors d\textquotesingle{}un vol). \end{DoxyCompactList}\item 
+\Hypertarget{struct_l_g_placed_tile_ac153700ac9fee946a379111767fff554}\label{struct_l_g_placed_tile_ac153700ac9fee946a379111767fff554} 
+std\+::vector$<$ std\+::pair$<$ int, int $>$ $>$ {\bfseries cells}
+\begin{DoxyCompactList}\small\item\em Coordonnées absolues couvertes sur la grille. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Enregistrement minimal d\textquotesingle{}une tuile posée pour permettre un futur vol. 
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/\mbox{\hyperlink{_l_g_shared_8h}{LGShared.\+h}}\end{DoxyCompactItemize}

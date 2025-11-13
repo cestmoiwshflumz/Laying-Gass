@@ -1,3 +1,6 @@
+/// \file Board.cpp
+/// \brief Implémentation des règles de placement et de calcul sur la grille.
+
 #include "Board.h"
 
 #include <algorithm>

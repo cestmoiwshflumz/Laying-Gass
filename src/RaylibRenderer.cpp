@@ -1,3 +1,6 @@
+/// \file RaylibRenderer.cpp
+/// \brief Boucle de rendu Raylib et toutes les interactions utilisateur.
+
 #include "RaylibRenderer.h"
 #include <algorithm>
 #include <cmath>

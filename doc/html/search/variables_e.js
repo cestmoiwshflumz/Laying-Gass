@@ -1,0 +1,19 @@
+var searchData=
+[
+  ['renderer_0',['renderer',['../class_game.html#acb58867b6fb012dcc9273a95f35a5c2c',1,'Game']]],
+  ['renderthread_1',['renderThread',['../class_raylib_renderer.html#a2ed5228780c46263704a5180c9597fe5',1,'RaylibRenderer']]],
+  ['restartbuttonactive_2',['restartButtonActive',['../class_raylib_renderer.html#aee9c141e1aead31da2409887a2a693c0',1,'RaylibRenderer']]],
+  ['restartcv_3',['restartCv',['../class_raylib_renderer.html#a49d3ff5712adcaa05002f4f78e263871',1,'RaylibRenderer']]],
+  ['restartpressed_4',['restartPressed',['../class_raylib_renderer.html#a39b14bc061cc70f240de00cf17fffc25',1,'RaylibRenderer']]],
+  ['resultcancelled_5',['resultCancelled',['../struct_raylib_renderer_1_1_placement_state.html#a2da8db132fae4005208c79bd3b4839d4',1,'RaylibRenderer::PlacementState']]],
+  ['resultplaced_6',['resultPlaced',['../struct_raylib_renderer_1_1_stone_state.html#a75c87a87db9827145965d8b9cdd29325',1,'RaylibRenderer::StoneState']]],
+  ['resultready_7',['resultReady',['../struct_raylib_renderer_1_1_placement_state.html#a190057d0ea4a17e4652c6530ae950d3e',1,'RaylibRenderer::PlacementState::resultReady'],['../struct_raylib_renderer_1_1_stone_state.html#a5bb212c517b910de0fd4aff65581a4c4',1,'RaylibRenderer::StoneState::resultReady']]],
+  ['resultshape_8',['resultShape',['../struct_raylib_renderer_1_1_placement_state.html#a0ecde4d17d2bbdc8e1e1b9dbda6e03bb',1,'RaylibRenderer::PlacementState']]],
+  ['resultsuccess_9',['resultSuccess',['../struct_raylib_renderer_1_1_placement_state.html#a21fc581f6ac2e7f60cca742fe0ef1076',1,'RaylibRenderer::PlacementState']]],
+  ['resultswap_10',['resultSwap',['../struct_raylib_renderer_1_1_placement_state.html#a44a289d08b705d4d90e0c7d43b148f9c',1,'RaylibRenderer::PlacementState']]],
+  ['resultx_11',['resultX',['../struct_raylib_renderer_1_1_placement_state.html#afb3a355d770e87b18fee3623b0f5482a',1,'RaylibRenderer::PlacementState::resultX'],['../struct_raylib_renderer_1_1_stone_state.html#a583530cef5b45cda14118d8edc06543c',1,'RaylibRenderer::StoneState::resultX']]],
+  ['resulty_12',['resultY',['../struct_raylib_renderer_1_1_placement_state.html#a305bfae78df3ec4bf8072eead79dd59b',1,'RaylibRenderer::PlacementState::resultY'],['../struct_raylib_renderer_1_1_stone_state.html#aae3456dd5c2f4ab21510be1fb0f26a40',1,'RaylibRenderer::StoneState::resultY']]],
+  ['rng_13',['rng',['../class_game.html#a47f76a7a9501a8fed1f41bd903adec63',1,'Game']]],
+  ['row_14',['row',['../struct_board_1_1_bonus_claim.html#a643a459066becf2d40158ebf82385d6e',1,'Board::BonusClaim']]],
+  ['running_15',['running',['../class_raylib_renderer.html#a1858a7c576dba0f0449d6d8b977913af',1,'RaylibRenderer']]]
+];

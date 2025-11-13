@@ -1,0 +1,90 @@
+\doxysection{Player Class Reference}
+\hypertarget{class_player}{}\label{class_player}\index{Player@{Player}}
+
+
+Représente un joueur humain, son score et ses ressources bonus.  
+
+
+
+
+{\ttfamily \#include $<$Player.\+h$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_player_a6c455986a7f81686c602bf8c105e4e9d}\label{class_player_a6c455986a7f81686c602bf8c105e4e9d} 
+{\bfseries Player} (const std\+::string \&name, char symbol)
+\begin{DoxyCompactList}\small\item\em Crée un joueur nommé avec le symbole qui identifie ses tuiles. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{Indent}\textbf{ Informations générales}\par
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_player_a548c3c4307feda9d702f8c4d0d8daa7c}\label{class_player_a548c3c4307feda9d702f8c4d0d8daa7c} 
+const std\+::string \& {\bfseries get\+Name} () const
+\item 
+\Hypertarget{class_player_acafb522e729c2fe951550f09809e075c}\label{class_player_acafb522e729c2fe951550f09809e075c} 
+char {\bfseries get\+Symbol} () const
+\item 
+\Hypertarget{class_player_acbdb2bae8d732157af0ca5f5438a2b63}\label{class_player_acbdb2bae8d732157af0ca5f5438a2b63} 
+int {\bfseries get\+Score} () const
+\item 
+\Hypertarget{class_player_ab81df21d03f5a9389a65e5281a2989ce}\label{class_player_ab81df21d03f5a9389a65e5281a2989ce} 
+void {\bfseries increment\+Score} (int points)
+\end{DoxyCompactItemize}
+\end{Indent}
+\begin{Indent}\textbf{ Coupons d\textquotesingle{}échange}\par
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_player_a832787932c61bbc494db0eff4f54a9b6}\label{class_player_a832787932c61bbc494db0eff4f54a9b6} 
+int {\bfseries get\+Swap\+Coupons} () const
+\item 
+\Hypertarget{class_player_a1d6a91419457494806da6e837190c9a6}\label{class_player_a1d6a91419457494806da6e837190c9a6} 
+bool {\bfseries has\+Swap\+Coupon} () const
+\item 
+\Hypertarget{class_player_aaa9d2588a91214ed70d99f10c9ff5fe9}\label{class_player_aaa9d2588a91214ed70d99f10c9ff5fe9} 
+void {\bfseries add\+Swap\+Coupon} ()
+\item 
+\Hypertarget{class_player_a7c997f1d67a1b4c68b7d347524e5b910}\label{class_player_a7c997f1d67a1b4c68b7d347524e5b910} 
+bool {\bfseries use\+Swap\+Coupon} ()
+\end{DoxyCompactItemize}
+\end{Indent}
+\begin{Indent}\textbf{ Pierres bloquantes}\par
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_player_ad3345afbe89dc32173d0a9d94209b7b0}\label{class_player_ad3345afbe89dc32173d0a9d94209b7b0} 
+int {\bfseries get\+Stones} () const
+\item 
+\Hypertarget{class_player_ac20a1d2a0d909aaa67cfa2cdab63a8e0}\label{class_player_ac20a1d2a0d909aaa67cfa2cdab63a8e0} 
+bool {\bfseries has\+Stone} () const
+\item 
+\Hypertarget{class_player_a5f3b59d614fa51d240250bc3d8baff45}\label{class_player_a5f3b59d614fa51d240250bc3d8baff45} 
+void {\bfseries add\+Stone} ()
+\item 
+\Hypertarget{class_player_ae7841c68c947def4f19ae7788ab7362a}\label{class_player_ae7841c68c947def4f19ae7788ab7362a} 
+bool {\bfseries use\+Stone} ()
+\end{DoxyCompactItemize}
+\end{Indent}
+\begin{Indent}\textbf{ Jetons de vol}\par
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_player_a0335f47cacee803e5dca34980ccf540b}\label{class_player_a0335f47cacee803e5dca34980ccf540b} 
+int {\bfseries get\+Steal\+Tokens} () const
+\item 
+\Hypertarget{class_player_a4e04f5f8a6f08b45f3a4e7f1f44faa08}\label{class_player_a4e04f5f8a6f08b45f3a4e7f1f44faa08} 
+bool {\bfseries has\+Steal\+Token} () const
+\item 
+\Hypertarget{class_player_aa219f128ccd8f4e89ee8edc1f76dce2a}\label{class_player_aa219f128ccd8f4e89ee8edc1f76dce2a} 
+void {\bfseries add\+Steal\+Token} ()
+\item 
+\Hypertarget{class_player_a2c6d2e0b6a4be815f1b880eac2fd2944}\label{class_player_a2c6d2e0b6a4be815f1b880eac2fd2944} 
+bool {\bfseries use\+Steal\+Token} ()
+\end{DoxyCompactItemize}
+\end{Indent}
+
+
+\doxysubsection{Detailed Description}
+Représente un joueur humain, son score et ses ressources bonus. 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/\mbox{\hyperlink{_player_8h}{Player.\+h}}\item 
+src/\mbox{\hyperlink{_player_8cpp}{Player.\+cpp}}\end{DoxyCompactItemize}

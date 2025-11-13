@@ -1,0 +1,29 @@
+\doxysection{LGShared.\+h}
+\hypertarget{_l_g_shared_8h_source}{}\label{_l_g_shared_8h_source}\index{include/LGShared.h@{include/LGShared.h}}
+\mbox{\hyperlink{_l_g_shared_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#ifndef\ LAYING\_GAME\_LGSHARED\_H}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#define\ LAYING\_GAME\_LGSHARED\_H}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <unordered\_map>}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ <utility>}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00010\ }
+\DoxyCodeLine{00014\ \textcolor{keyword}{inline}\ std::unordered\_map<char,\ std::pair<int,int>>\ \mbox{\hyperlink{_l_g_shared_8h_adbb155cb4e891cab49c669ee1f0215e4}{LG\_START\_CELL}};}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00019\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{_l_g_shared_8h_a7696b238d8087a2f8bd7b10d6004f7c3}{LG\_REQUIRE\_TOUCH\_TO\_START}}\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00024\ \textcolor{keyword}{enum\ class}\ \mbox{\hyperlink{_l_g_shared_8h_afced3db3d7defdaffa32f9386e24342b}{LGBonus}}\ \{\ None,\ Coupon,\ Stone,\ Robbery\ \};}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00029\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_l_g_placed_tile}{LGPlacedTile}}\ \{}
+\DoxyCodeLine{00030\ \ \ \ \ \textcolor{keywordtype}{char}\ \mbox{\hyperlink{struct_l_g_placed_tile_abaca06ce6156b8ef5794c943e29bec0c}{owner}}\ =\ \textcolor{charliteral}{'?'};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00031\ \ \ \ \ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{struct_l_g_placed_tile_ab1a3e10cc080f7af221a2efbe6803ac5}{shapeIndex}}\ =\ -\/1;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00032\ \ \ \ \ std::vector<std::vector<int>>\ \mbox{\hyperlink{struct_l_g_placed_tile_ae179738f023096cd933a7fcf4ec317da}{shape}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00033\ \ \ \ \ std::vector<std::pair<int,int>>\ \mbox{\hyperlink{struct_l_g_placed_tile_ac153700ac9fee946a379111767fff554}{cells}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00034\ \};}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00036\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//LAYING\_GAME\_LGSHARED\_H}}
+
+\end{DoxyCode}

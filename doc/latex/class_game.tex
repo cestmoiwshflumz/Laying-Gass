@@ -1,0 +1,67 @@
+\doxysection{Game Class Reference}
+\hypertarget{class_game}{}\label{class_game}\index{Game@{Game}}
+
+
+Orchestrateur principal du jeu Laying Grass.  
+
+
+
+
+{\ttfamily \#include $<$Game.\+h$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_game_ade79c7bcc268ebc2c53e81d947d0bfa8}{Game}} (int num\+Players, const std\+::string \&tile\+File)
+\begin{DoxyCompactList}\small\item\em Prépare une partie avec {\ttfamily num\+Players} et un fichier de tuiles donné. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_game_a3142e6fdebebb49ffbadd11ee1ace4e3}{start}} ()
+\begin{DoxyCompactList}\small\item\em Lance la boucle de jeu complète (9 tours) et retourne l\textquotesingle{}intention de redémarrage. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Orchestrateur principal du jeu Laying Grass. 
+
+La classe instancie la grille, charge les tuiles, gère la boucle des tours et pilote le renderer Raylib pour l\textquotesingle{}affichage/les interactions. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_game_ade79c7bcc268ebc2c53e81d947d0bfa8}\index{Game@{Game}!Game@{Game}}
+\index{Game@{Game}!Game@{Game}}
+\doxysubsubsection{\texorpdfstring{Game()}{Game()}}
+{\footnotesize\ttfamily \label{class_game_ade79c7bcc268ebc2c53e81d947d0bfa8} 
+Game\+::\+Game (\begin{DoxyParamCaption}\item[{int}]{num\+Players}{, }\item[{const std\+::string \&}]{tile\+File}{}\end{DoxyParamCaption})}
+
+
+
+Prépare une partie avec {\ttfamily num\+Players} et un fichier de tuiles donné. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em num\+Players} & Nombre de joueurs humains (2 à 9). \\
+\hline
+{\em tile\+File} & Fichier JSON décrivant les formes disponibles. \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_game_a3142e6fdebebb49ffbadd11ee1ace4e3}\index{Game@{Game}!start@{start}}
+\index{start@{start}!Game@{Game}}
+\doxysubsubsection{\texorpdfstring{start()}{start()}}
+{\footnotesize\ttfamily \label{class_game_a3142e6fdebebb49ffbadd11ee1ace4e3} 
+bool Game\+::start (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Lance la boucle de jeu complète (9 tours) et retourne l\textquotesingle{}intention de redémarrage. 
+
+Cette méthode s\textquotesingle{}occupe d\textquotesingle{}initialiser le renderer, d\textquotesingle{}enchaîner les tours, puis de calculer/afficher les scores finaux.
+
+\begin{DoxyReturn}{Returns}
+{\ttfamily true} si les joueurs souhaitent relancer une partie, {\ttfamily false} sinon. 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/\mbox{\hyperlink{_game_8h}{Game.\+h}}\item 
+src/\mbox{\hyperlink{_game_8cpp}{Game.\+cpp}}\end{DoxyCompactItemize}
