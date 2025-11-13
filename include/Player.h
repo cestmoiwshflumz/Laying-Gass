@@ -3,47 +3,37 @@
 
 #include <string>
 
-/**
- * @class Player
- * @brief Représente un joueur dans le jeu.
- */
 class Player {
 public:
-    /**
-     * @brief Constructeur pour initialiser un joueur avec son nom et son symbole.
-     * @param name Nom du joueur.
-     * @param symbol Symbole représentant le joueur (ex: 'A', 'B', ...).
-     */
     Player(const std::string& name, char symbol);
 
-    /**
-     * @brief Récupère le nom du joueur.
-     * @return Le nom du joueur.
-     */
     const std::string& getName() const;
-
-    /**
-     * @brief Récupère le symbole du joueur.
-     * @return Le symbole du joueur.
-     */
     char getSymbol() const;
-
-    /**
-     * @brief Récupère le score actuel du joueur.
-     * @return Le score du joueur.
-     */
     int getScore() const;
-
-    /**
-     * @brief Augmente le score du joueur.
-     * @param points Nombre de points à ajouter au score.
-     */
     void incrementScore(int points);
 
+    int getSwapCoupons() const;
+    bool hasSwapCoupon() const;
+    void addSwapCoupon();
+    bool useSwapCoupon();
+
+    int getStones() const;
+    bool hasStone() const;
+    void addStone();
+    bool useStone();
+
+    int getStealTokens() const;
+    bool hasStealToken() const;
+    void addStealToken();
+    bool useStealToken();
+
 private:
-    std::string name;   ///< Nom du joueur.
-    char symbol;        ///< Symbole représentant le joueur (ex: 'A', 'B', ...).
-    int score;          ///< Score actuel du joueur.
+    std::string name;
+    char symbol;
+    int score;
+    int swapCoupons;
+    int stones;
+    int stealTokens;
 };
 
 #endif // PLAYER_H

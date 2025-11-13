@@ -43,8 +43,6 @@ public:
                      const Tile* currentTile,
                      const Tile* nextTile);
 
-    void setBonusGrid(const std::vector<std::vector<int>>& grid); // 0 none, 1 coupon, 2 stone, 3 steal
-
     PlacementResult requestTilePlacement(const Board& board,
                                          const Player& currentPlayer,
                                          const Tile& tile,
@@ -54,19 +52,35 @@ public:
     StoneResult requestStonePlacement(const Board& board,
                                       const Player& currentPlayer);
 
+    bool confirmAction(const std::string& title,
+                       const std::string& message,
+                       const std::string& confirmLabel = "Oui",
+                       const std::string& cancelLabel = "Non");
+
+    int selectFromList(const std::string& title,
+                       const std::vector<std::string>& options,
+                       const std::string& cancelLabel = "Annuler");
+
+    int selectTile(const std::string& title,
+                   const std::vector<Tile>& options,
+                   const std::string& cancelLabel = "Annuler");
+
     void showGameOver(const std::vector<Player>& players);
 
     bool isReady() const;
-    // Simple GUI notifications / confirms
-    void flash(const std::string& text, float seconds = 1.5f);
-    bool confirmYesNo(const std::string& question, const char* yesLabel = "Oui", const char* noLabel = "Non");
-
 
 private:
     enum class Mode {
         Idle,
         Placement,
         Stone
+    };
+
+    enum class DialogKind {
+        None,
+        Confirm,
+        List,
+        TilePicker
     };
 
     struct PlayerSnapshot {
@@ -99,6 +113,31 @@ private:
         int resultY{0};
     };
 
+    struct TilePreview {
+        int id{0};
+        std::vector<std::vector<int>> shape;
+    };
+
+    struct DialogState {
+        bool active{false};
+        DialogKind kind{DialogKind::None};
+        bool completed{false};
+        bool boolResult{false};
+        int choice{-1};
+        std::string title;
+        std::string message;
+        std::string confirmLabel{"Oui"};
+        std::string cancelLabel{"Non"};
+        std::vector<std::string> options;
+        std::vector<TilePreview> tiles;
+    };
+
+    struct DialogRenderResult {
+        bool completed{false};
+        bool boolValue{false};
+        int indexValue{-1};
+    };
+
     void renderLoop();
     void drawIdle(const std::vector<std::vector<char>>& grid,
                   const PlayerSnapshot& player,
@@ -116,6 +155,11 @@ private:
     Rectangle boardArea() const;
     bool canPlaceLocally(int x, int y, const std::vector<std::vector<int>>& tileShape, char playerSymbol, const std::vector<std::vector<char>>& grid) const;
     bool canPlaceStone(int x, int y, const std::vector<std::vector<char>>& grid) const;
+    DialogRenderResult drawDialogOverlay(const DialogState& dialog,
+                                         const Vector2& mouse,
+                                         bool mouseClick,
+                                         bool escapePressed) const;
+    void fulfillDialogResult(const DialogRenderResult& result, DialogKind kind);
     Color colorForSymbol(char symbol) const;
     void drawTilePreview(const std::vector<std::vector<int>>& tileShape, int originX, int originY) const;
     static std::vector<std::vector<int>> rotateClockwise(const std::vector<std::vector<int>>& shape);
@@ -132,6 +176,7 @@ private:
     std::thread renderThread;
     mutable std::mutex stateMutex;
     std::condition_variable placementCv;
+    std::condition_variable dialogCv;
 
     Mode mode;
     std::vector<std::vector<char>> gridSnapshot;
@@ -142,6 +187,7 @@ private:
     bool hasNextTile;
     PlacementState placement;
     StoneState stone;
+    DialogState dialog;
     bool gameOverActive{false};
     std::vector<FinalScoreEntry> finalScores;
     std::string feedbackMessage;

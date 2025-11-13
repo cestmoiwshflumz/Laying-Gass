@@ -35,6 +35,7 @@ RaylibRenderer::RaylibRenderer(int boardSize, int cellSize)
 RaylibRenderer::~RaylibRenderer() {
     running = false;
     placementCv.notify_all();
+    dialogCv.notify_all();
     if (renderThread.joinable()) {
         renderThread.join();
     }
@@ -177,6 +178,114 @@ RaylibRenderer::StoneResult RaylibRenderer::requestStonePlacement(const Board& b
     stone.resultReady = false;
     mode = Mode::Idle;
     return result;
+}
+
+bool RaylibRenderer::confirmAction(const std::string& title,
+                                   const std::string& message,
+                                   const std::string& confirmLabel,
+                                   const std::string& cancelLabel) {
+    if (!windowReady.load()) {
+        return false;
+    }
+
+    {
+        std::lock_guard<std::mutex> lock(stateMutex);
+        dialog = {};
+        dialog.active = true;
+        dialog.kind = DialogKind::Confirm;
+        dialog.title = title;
+        dialog.message = message;
+        dialog.confirmLabel = confirmLabel;
+        dialog.cancelLabel = cancelLabel;
+        dialog.completed = false;
+    }
+
+    std::unique_lock<std::mutex> lock(stateMutex);
+    dialogCv.wait(lock, [&]() { return !running.load() || dialog.completed; });
+
+    if (!dialog.completed) {
+        dialog.active = false;
+        return false;
+    }
+
+    const bool value = dialog.boolResult;
+    dialog.completed = false;
+    dialog.kind = DialogKind::None;
+    dialog.options.clear();
+    dialog.tiles.clear();
+    return value;
+}
+
+int RaylibRenderer::selectFromList(const std::string& title,
+                                   const std::vector<std::string>& options,
+                                   const std::string& cancelLabel) {
+    if (!windowReady.load() || options.empty()) {
+        return -1;
+    }
+
+    {
+        std::lock_guard<std::mutex> lock(stateMutex);
+        dialog = {};
+        dialog.active = true;
+        dialog.kind = DialogKind::List;
+        dialog.title = title;
+        dialog.options = options;
+        dialog.cancelLabel = cancelLabel;
+        dialog.completed = false;
+    }
+
+    std::unique_lock<std::mutex> lock(stateMutex);
+    dialogCv.wait(lock, [&]() { return !running.load() || dialog.completed; });
+
+    if (!dialog.completed) {
+        dialog.active = false;
+        return -1;
+    }
+
+    const int choice = dialog.choice;
+    dialog.completed = false;
+    dialog.kind = DialogKind::None;
+    dialog.options.clear();
+    dialog.tiles.clear();
+    return choice;
+}
+
+int RaylibRenderer::selectTile(const std::string& title,
+                               const std::vector<Tile>& options,
+                               const std::string& cancelLabel) {
+    if (!windowReady.load() || options.empty()) {
+        return -1;
+    }
+
+    {
+        std::lock_guard<std::mutex> lock(stateMutex);
+        dialog = {};
+        dialog.active = true;
+        dialog.kind = DialogKind::TilePicker;
+        dialog.title = title;
+        dialog.cancelLabel = cancelLabel;
+        dialog.tiles.clear();
+        dialog.tiles.reserve(options.size());
+        for (const auto& option : options) {
+            dialog.tiles.push_back(TilePreview{option.id, option.shape});
+        }
+        dialog.completed = false;
+    }
+
+    std::unique_lock<std::mutex> lock(stateMutex);
+    dialogCv.wait(lock, [&]() { return !running.load() || dialog.completed; });
+
+    if (!dialog.completed) {
+        dialog.active = false;
+        return -1;
+    }
+
+    const int choice = dialog.choice;
+    dialog.completed = false;
+    dialog.kind = DialogKind::None;
+    dialog.options.clear();
+    dialog.tiles.clear();
+    return choice;
 }
 
 void RaylibRenderer::renderLoop() {
@@ -640,6 +749,217 @@ bool RaylibRenderer::canPlaceStone(int x, int y, const std::vector<std::vector<c
         return false;
     }
     return grid[x][y] == '.';
+}
+
+RaylibRenderer::DialogRenderResult RaylibRenderer::drawDialogOverlay(const DialogState& dialogState,
+                                                                     const Vector2& mouse,
+                                                                     bool mouseClick,
+                                                                     bool escapePressed) const {
+    DialogRenderResult result;
+    if (!dialogState.active) {
+        return result;
+    }
+
+    const int width = GetScreenWidth();
+    const int height = GetScreenHeight();
+    DrawRectangle(0, 0, width, height, ColorAlpha(BLACK, 0.6f));
+
+    int panelW = 480;
+    int panelH = 240;
+
+    switch (dialogState.kind) {
+        case DialogKind::Confirm:
+            panelW = 480;
+            panelH = 220;
+            break;
+        case DialogKind::List:
+            panelW = 460;
+            panelH = 160 + static_cast<int>(dialogState.options.size()) * 44;
+            break;
+        case DialogKind::TilePicker:
+            panelW = std::min(width - 80,
+                              std::max(520, static_cast<int>(dialogState.tiles.size()) * 140));
+            panelH = 360;
+            break;
+        default:
+            break;
+    }
+
+    panelW = std::clamp(panelW, 320, width - 80);
+    panelH = std::clamp(panelH, 180, height - 80);
+
+    const int panelX = (width - panelW) / 2;
+    const int panelY = (height - panelH) / 2;
+
+    DrawRectangle(panelX, panelY, panelW, panelH, ColorAlpha(DARKGRAY, 0.92f));
+    DrawRectangleLines(panelX, panelY, panelW, panelH, RAYWHITE);
+
+    DrawText(dialogState.title.c_str(), panelX + 20, panelY + 18, 24, RAYWHITE);
+    if (!dialogState.message.empty()) {
+        DrawText(dialogState.message.c_str(), panelX + 20, panelY + 58, 18, RAYWHITE);
+    }
+
+    auto drawButton = [&](const Rectangle& rect, const std::string& label, Color color) {
+        DrawRectangleRounded(rect, 0.2f, 8, color);
+        const int textWidth = MeasureText(label.c_str(), 18);
+        DrawText(label.c_str(),
+                 static_cast<int>(rect.x + (rect.width - textWidth) / 2.0f),
+                 static_cast<int>(rect.y + rect.height / 2.0f - 9),
+                 18,
+                 RAYWHITE);
+    };
+
+    auto handleConfirm = [&]() {
+        const Rectangle confirmRect{static_cast<float>(panelX + 40),
+                                    static_cast<float>(panelY + panelH - 70),
+                                    150.0f,
+                                    44.0f};
+        const Rectangle cancelRect{static_cast<float>(panelX + panelW - 190),
+                                   static_cast<float>(panelY + panelH - 70),
+                                   150.0f,
+                                   44.0f};
+        const bool confirmHover = CheckCollisionPointRec(mouse, confirmRect);
+        const bool cancelHover = CheckCollisionPointRec(mouse, cancelRect);
+
+        drawButton(confirmRect, dialogState.confirmLabel, confirmHover ? DARKGREEN : GREEN);
+        drawButton(cancelRect, dialogState.cancelLabel, cancelHover ? MAROON : DARKGRAY);
+
+        if (escapePressed) {
+            result.completed = true;
+            result.boolValue = false;
+            return;
+        }
+
+        if (mouseClick && confirmHover) {
+            result.completed = true;
+            result.boolValue = true;
+        } else if (mouseClick && cancelHover) {
+            result.completed = true;
+            result.boolValue = false;
+        }
+    };
+
+    auto handleList = [&]() {
+        int y = panelY + 70;
+        for (size_t i = 0; i < dialogState.options.size(); ++i) {
+            Rectangle row{static_cast<float>(panelX + 30),
+                          static_cast<float>(y),
+                          static_cast<float>(panelW - 60),
+                          36.0f};
+            const bool hovered = CheckCollisionPointRec(mouse, row);
+            DrawRectangleRounded(row, 0.15f, 6, hovered ? DARKGREEN : Color{60, 60, 60, 255});
+            DrawText(dialogState.options[i].c_str(),
+                     static_cast<int>(row.x + 12),
+                     static_cast<int>(row.y + 8),
+                     18,
+                     RAYWHITE);
+
+            if (mouseClick && hovered) {
+                result.completed = true;
+                result.indexValue = static_cast<int>(i);
+                return;
+            }
+            y += 44;
+        }
+
+        const Rectangle cancelRect{static_cast<float>(panelX + 30),
+                                   static_cast<float>(panelY + panelH - 60),
+                                   static_cast<float>(panelW - 60),
+                                   40.0f};
+        const bool cancelHover = CheckCollisionPointRec(mouse, cancelRect);
+        drawButton(cancelRect, dialogState.cancelLabel, cancelHover ? MAROON : DARKGRAY);
+
+        if ((mouseClick && cancelHover) || escapePressed) {
+            result.completed = true;
+            result.indexValue = -1;
+        }
+    };
+
+    auto handleTiles = [&]() {
+        const float cardWidth = 130.0f;
+        const float cardHeight = 190.0f;
+        const float spacing = 16.0f;
+        const float totalWidth = dialogState.tiles.empty()
+                                 ? 0.0f
+                                 : dialogState.tiles.size() * cardWidth + (dialogState.tiles.size() - 1) * spacing;
+        const float startX = panelX + std::max(20.0f, (panelW - totalWidth) / 2.0f);
+        const float cardY = panelY + 70.0f;
+
+        for (size_t i = 0; i < dialogState.tiles.size(); ++i) {
+            Rectangle card{startX + static_cast<float>(i) * (cardWidth + spacing),
+                           cardY,
+                           cardWidth,
+                           cardHeight};
+            const bool hovered = CheckCollisionPointRec(mouse, card);
+            DrawRectangleRounded(card, 0.15f, 6, hovered ? DARKGREEN : Color{70, 70, 70, 255});
+            DrawRectangleLinesEx(card, 2.0f, RAYWHITE);
+
+            const std::string label = "Tuile #" + std::to_string(dialogState.tiles[i].id);
+            DrawText(label.c_str(),
+                     static_cast<int>(card.x + 8),
+                     static_cast<int>(card.y + 8),
+                     18,
+                     RAYWHITE);
+
+            drawTilePreview(dialogState.tiles[i].shape,
+                            static_cast<int>(card.x + 10),
+                            static_cast<int>(card.y + 40));
+
+            if (mouseClick && hovered) {
+                result.completed = true;
+                result.indexValue = static_cast<int>(i);
+                return;
+            }
+        }
+
+        const Rectangle cancelRect{static_cast<float>(panelX + panelW - 170),
+                                   static_cast<float>(panelY + panelH - 60),
+                                   150.0f,
+                                   40.0f};
+        const bool cancelHover = CheckCollisionPointRec(mouse, cancelRect);
+        drawButton(cancelRect, dialogState.cancelLabel, cancelHover ? MAROON : DARKGRAY);
+
+        if ((mouseClick && cancelHover) || escapePressed) {
+            result.completed = true;
+            result.indexValue = -1;
+        }
+    };
+
+    switch (dialogState.kind) {
+        case DialogKind::Confirm:
+            handleConfirm();
+            break;
+        case DialogKind::List:
+            handleList();
+            break;
+        case DialogKind::TilePicker:
+            handleTiles();
+            break;
+        default:
+            break;
+    }
+
+    return result;
+}
+
+void RaylibRenderer::fulfillDialogResult(const DialogRenderResult& result, DialogKind kind) {
+    if (!result.completed) {
+        return;
+    }
+
+    std::lock_guard<std::mutex> lock(stateMutex);
+    if (!dialog.active || dialog.kind != kind) {
+        return;
+    }
+
+    if (kind == DialogKind::Confirm) {
+        dialog.boolResult = result.boolValue;
+    } else {
+        dialog.choice = result.indexValue;
+    }
+    dialog.completed = true;
+    dialog.active = false;
+    dialogCv.notify_all();
 }
 
 void RaylibRenderer::showGameOver(const std::vector<Player>& players) {

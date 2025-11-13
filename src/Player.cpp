@@ -1,41 +1,80 @@
-#include "../include/Player.h"
+#include "Player.h"
 
-/**
- * @brief Constructeur de la classe Player.
- * Initialise le joueur avec son nom, son symbole, et un score initial de 0.
- * @param name Nom du joueur.
- * @param symbol Symbole utilisé pour représenter le joueur sur le plateau.
- */
-Player::Player(const std::string& name, char symbol) : name(name), symbol(symbol), score(0) {}
+Player::Player(const std::string& name, char symbol)
+        : name(name), symbol(symbol), score(0), swapCoupons(1), stones(0), stealTokens(0) {}
 
-/**
- * @brief Récupère le nom du joueur.
- * @return Référence constante au nom du joueur.
- */
 const std::string& Player::getName() const {
     return name;
 }
 
-/**
- * @brief Récupère le symbole du joueur.
- * @return Le symbole du joueur sous forme de caractère.
- */
 char Player::getSymbol() const {
     return symbol;
 }
 
-/**
- * @brief Récupère le score actuel du joueur.
- * @return Le score du joueur sous forme d'entier.
- */
 int Player::getScore() const {
     return score;
 }
 
-/**
- * @brief Augmente le score du joueur.
- * @param points Nombre de points à ajouter au score du joueur.
- */
 void Player::incrementScore(int points) {
     score += points;
+}
+
+int Player::getSwapCoupons() const {
+    return swapCoupons;
+}
+
+bool Player::hasSwapCoupon() const {
+    return swapCoupons > 0;
+}
+
+void Player::addSwapCoupon() {
+    ++swapCoupons;
+}
+
+bool Player::useSwapCoupon() {
+    if (!hasSwapCoupon()) {
+        return false;
+    }
+    --swapCoupons;
+    return true;
+}
+
+int Player::getStones() const {
+    return stones;
+}
+
+bool Player::hasStone() const {
+    return stones > 0;
+}
+
+void Player::addStone() {
+    ++stones;
+}
+
+bool Player::useStone() {
+    if (!hasStone()) {
+        return false;
+    }
+    --stones;
+    return true;
+}
+
+int Player::getStealTokens() const {
+    return stealTokens;
+}
+
+bool Player::hasStealToken() const {
+    return stealTokens > 0;
+}
+
+void Player::addStealToken() {
+    ++stealTokens;
+}
+
+bool Player::useStealToken() {
+    if (!hasStealToken()) {
+        return false;
+    }
+    --stealTokens;
+    return true;
 }
