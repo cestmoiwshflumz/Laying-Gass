@@ -12,23 +12,38 @@
 #include "Player.h"
 #include "Tiles.h"
 
+/**
+ * @brief Boucle de rendu Raylib indépendante de la logique métier.
+ *
+ * La classe tourne sur un thread dédié et expose une API synchrone pour
+ * demander des placements de tuiles, de pierres ou recueillir des choix UI.
+ */
 class RaylibRenderer {
 public:
+    /**
+     * @brief Résultat retourné après une phase de placement de tuile.
+     */
     struct PlacementResult {
-        bool success{false};
-        bool cancelled{false};
-        bool swapRequested{false};
-        int x{0};
-        int y{0};
-        std::vector<std::vector<int>> shape;
+        bool success{false};                       //!< True si une tuile valide a été posée.
+        bool cancelled{false};                     //!< True si le joueur a annulé la pose.
+        bool swapRequested{false};                 //!< True si le joueur préfère échanger sa tuile.
+        int x{0};                                  //!< Coordonnée X retenue.
+        int y{0};                                  //!< Coordonnée Y retenue.
+        std::vector<std::vector<int>> shape;       //!< Forme finale (après rotations éventuelles).
     };
 
+    /**
+     * @brief Résultat d'une phase de placement de pierre.
+     */
     struct StoneResult {
         bool placed{false};
         int x{0};
         int y{0};
     };
 
+    /**
+     * @brief Structure utilisée lors de l'écran de fin pour récapituler les scores.
+     */
     struct FinalScoreEntry {
         std::string name;
         char symbol{'A'};
@@ -37,42 +52,78 @@ public:
         bool winner{false};
     };
 
+    /**
+     * @brief Initialise la fenêtre Raylib et la boucle de rendu.
+     * @param boardSize Taille du plateau (20 ou 30 cases).
+     * @param cellSize  Taille des cellules en pixels (défaut: 24px).
+     */
     explicit RaylibRenderer(int boardSize, int cellSize = 24);
     ~RaylibRenderer();
 
+    /**
+     * @brief Met à jour les instantanés consommés par le thread de rendu.
+     */
     void updateState(const Board& board,
                      const Player& currentPlayer,
                      const Tile* currentTile,
                      const Tile* nextTile);
 
+    /**
+     * @brief Bloque jusqu'à ce que le joueur finalise le placement d'une tuile.
+     */
     PlacementResult requestTilePlacement(const Board& board,
                                          const Player& currentPlayer,
                                          const Tile& tile,
                                          const Tile* nextTile,
                                          bool allowSwap);
 
+    /**
+     * @brief Démarre une phase de placement de pierre bloquante.
+     */
     StoneResult requestStonePlacement(const Board& board,
                                       const Player& currentPlayer);
 
+    /**
+     * @brief Attend que le joueur demande une nouvelle partie depuis l'écran final.
+     */
     bool waitForRestart();
 
+    /**
+     * @brief Affiche une boîte de dialogue booléenne.
+     */
     bool confirmAction(const std::string& title,
                        const std::string& message,
                        const std::string& confirmLabel = "Oui",
                        const std::string& cancelLabel = "Non");
 
+    /**
+     * @brief Affiche une liste d'options textuelles et retourne l'index choisi.
+     */
     int selectFromList(const std::string& title,
                        const std::vector<std::string>& options,
                        const std::string& cancelLabel = "Annuler");
 
+    /**
+     * @brief Variante spécialisée pour sélectionner une tuile à partir d'un pool.
+     */
     int selectTile(const std::string& title,
                    const std::vector<Tile>& options,
                    const std::string& cancelLabel = "Annuler");
 
+    /**
+     * @brief Affiche l'écran de fin de partie avec le classement.
+     */
     void showGameOver(const std::vector<FinalScoreEntry>& scores,
                       const std::string& victoryRule);
 
+    /**
+     * @brief Indique si la fenêtre est prête à recevoir des événements (après init).
+     */
     bool isReady() const;
+
+    /**
+     * @brief Retourne true tant que le thread de rendu tourne.
+     */
     bool isRunning() const;
 
 private:

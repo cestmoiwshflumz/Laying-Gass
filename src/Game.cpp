@@ -9,7 +9,6 @@
 #include <unordered_set>
 #include <optional>
 #include <cmath>
-#include <cmath>
 
 namespace {
 int squareSideFromArea(int area) {

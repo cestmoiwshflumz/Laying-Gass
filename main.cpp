@@ -9,7 +9,7 @@
 int main() {
     SetConsoleOutputCP(CP_UTF8);
 
-    const int numPlayers = 2;
+    const int numPlayers = 9;
     const std::string tilePath = "../data/tiles.json";
     bool restartRequested = false;
     do {

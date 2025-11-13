@@ -89,3 +89,16 @@ Le jeu se joue dans le terminal. À chaque tour, les joueurs peuvent :
 
 Les informations de jeu (tuiles disponibles, grille de jeu, etc.) sont affichées en ligne de commande.
 
+## Documentation Technique (Doxygen)
+
+1. **Installer Doxygen** : disponible sur [doxygen.nl](https://www.doxygen.nl/) ou via votre gestionnaire de paquets.
+2. **Générer la documentation** :
+   ```bash
+   doxygen docs/Doxyfile
+   ```
+3. **Consulter la sortie** :
+   - HTML : `docs/build/html/index.html`
+   - XML (pour intégrations CI/CD) : `docs/build/xml`
+
+Le fichier `docs/technical_overview.md` sert de page principale et décrit l'architecture (modules, flux de données, invariants). Ajoutez vos commentaires Doxygen directement dans les en-têtes `include/*.h` pour enrichir cette base lors des prochaines générations.
+

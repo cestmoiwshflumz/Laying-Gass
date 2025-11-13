@@ -9,22 +9,29 @@
 #include <utility>
 #include <vector>
 
-// Global shared state to avoid changing Board.h signatures:
-// - start cell per player symbol
-// - whether placements must touch the start-connected territory (disabled during the start phase)
+/**
+ * @brief Cases de départ par symbole (partagé entre Game et Board).
+ */
+inline std::unordered_map<char, std::pair<int,int>> LG_START_CELL;
 
-inline std::unordered_map<char, std::pair<int,int>> LG_START_CELL; // symbol -> {r,c}
+/**
+ * @brief Active l'obligation de toucher la zone déjà connectée au départ.
+ */
 inline bool LG_REQUIRE_TOUCH_TO_START = false;
 
-// Bonus types (board overlay stored in Game; Board stays unaware)
+/**
+ * @brief Types de bonus pouvant apparaître sur la grille.
+ */
 enum class LGBonus { None, Coupon, Stone, Robbery };
 
-// Simple placed-tile record so we can implement "robbery"
+/**
+ * @brief Enregistrement minimal d'une tuile posée pour permettre un futur vol.
+ */
 struct LGPlacedTile {
-    char owner = '?';
-    int shapeIndex = -1; // index into Tiles
-    std::vector<std::vector<int>> shape; // normalized shape matrix used when stealing
-    std::vector<std::pair<int,int>> cells; // absolute board cells covered
+    char owner = '?';                                        //!< Symbole du joueur.
+    int shapeIndex = -1;                                     //!< Index original dans Tiles.
+    std::vector<std::vector<int>> shape;                     //!< Matrice normalisée (utilisée lors d'un vol).
+    std::vector<std::pair<int,int>> cells;                   //!< Coordonnées absolues couvertes sur la grille.
 };
 
 #endif //LAYING_GAME_LGSHARED_H

@@ -3,6 +3,9 @@
 #include <cmath>
 
 namespace {
+constexpr const char* WINDOW_TITLE = "Laying Grass - Interface";
+constexpr const char* WINDOW_ICON_PATH = "../ressources/icon.png";
+
 const char* bonusLabel(LGBonus bonus) {
     switch (bonus) {
         case LGBonus::Coupon:
@@ -314,7 +317,14 @@ void RaylibRenderer::renderLoop() {
     const int height = margin * 2 + boardSize * cellSize + 60;
 
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
-    InitWindow(width, height, "Laying Grass - Interface");
+    InitWindow(width, height, WINDOW_TITLE);
+    Image icon = LoadImage(WINDOW_ICON_PATH);
+    if (icon.data != nullptr) {
+        SetWindowIcon(icon);
+        UnloadImage(icon);
+    } else {
+        TraceLog(LOG_WARNING, "Failed to load window icon from %s", WINDOW_ICON_PATH);
+    }
     SetTargetFPS(60);
     loadTextures();
     windowReady = true;

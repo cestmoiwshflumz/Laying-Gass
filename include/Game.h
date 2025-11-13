@@ -11,18 +11,33 @@
 #include <random>
 #include <vector>
 
+/**
+ * @brief Orchestrateur principal du jeu Laying Grass.
+ *
+ * La classe instancie la grille, charge les tuiles, gère la boucle des tours
+ * et pilote le renderer Raylib pour l'affichage/les interactions.
+ */
 class Game {
 public:
+    /**
+     * @brief Prépare une partie avec @p numPlayers et un fichier de tuiles donné.
+     * @param numPlayers Nombre de joueurs humains (2 à 9).
+     * @param tileFile   Fichier JSON décrivant les formes disponibles.
+     */
     Game(int numPlayers, const std::string& tileFile);
+
+    /**
+     * @brief Lance la boucle de jeu complète (9 tours) et retourne le statut de victoire.
+     */
     bool start();
 
 private:
-    Board board;
-    Tiles tiles;
-    std::vector<Player> players;
-    std::mt19937 rng;
-    std::unique_ptr<RaylibRenderer> renderer;
-    std::vector<LGPlacedTile> placedTiles;
+    Board board;                                  //!< Grille logique partagée.
+    Tiles tiles;                                  //!< Bibliothèque de formes.
+    std::vector<Player> players;                  //!< Joueurs inscrits à la partie.
+    std::mt19937 rng;                             //!< Générateur pseudo-aléatoire.
+    std::unique_ptr<RaylibRenderer> renderer;     //!< Couche d'affichage interactive.
+    std::vector<LGPlacedTile> placedTiles;        //!< Historique des tuiles posées pour la mécanique de vol.
 
     void takeTurn(Player& player, Tile currentTile, const Tile& nextTile);
     void handleStonePlacement(Player& player, const Tile* currentTile, const Tile* nextTile);
