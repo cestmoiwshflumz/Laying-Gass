@@ -7,6 +7,7 @@
 #pragma once
 #include <unordered_map>
 #include <utility>
+#include <vector>
 
 // Global shared state to avoid changing Board.h signatures:
 // - start cell per player symbol
@@ -22,6 +23,7 @@ enum class LGBonus { None, Coupon, Stone, Robbery };
 struct LGPlacedTile {
     char owner = '?';
     int shapeIndex = -1; // index into Tiles
+    std::vector<std::vector<int>> shape; // normalized shape matrix used when stealing
     std::vector<std::pair<int,int>> cells; // absolute board cells covered
 };
 

@@ -32,7 +32,9 @@ public:
     struct FinalScoreEntry {
         std::string name;
         char symbol{'A'};
-        int score{0};
+        int territory{0};
+        int largestSquare{0};
+        bool winner{false};
     };
 
     explicit RaylibRenderer(int boardSize, int cellSize = 24);
@@ -52,6 +54,8 @@ public:
     StoneResult requestStonePlacement(const Board& board,
                                       const Player& currentPlayer);
 
+    bool waitForRestart();
+
     bool confirmAction(const std::string& title,
                        const std::string& message,
                        const std::string& confirmLabel = "Oui",
@@ -65,9 +69,11 @@ public:
                    const std::vector<Tile>& options,
                    const std::string& cancelLabel = "Annuler");
 
-    void showGameOver(const std::vector<Player>& players);
+    void showGameOver(const std::vector<FinalScoreEntry>& scores,
+                      const std::string& victoryRule);
 
     bool isReady() const;
+    bool isRunning() const;
 
 private:
     enum class Mode {
@@ -142,16 +148,21 @@ private:
     void drawIdle(const std::vector<std::vector<char>>& grid,
                   const PlayerSnapshot& player,
                   const std::vector<std::vector<int>>& currentTile,
-                  const std::vector<std::vector<int>>& nextTile) const;
+                  const std::vector<std::vector<int>>& nextTile,
+                  const std::vector<std::vector<LGBonus>>& bonuses) const;
     void drawPlacement(const std::vector<std::vector<char>>& grid,
                        const PlayerSnapshot& player,
                        std::vector<std::vector<int>> tileShape,
                        const std::vector<std::vector<int>>& nextTilePreview,
-                       bool allowSwap);
+                       bool allowSwap,
+                       const std::vector<std::vector<LGBonus>>& bonuses);
     void drawStonePlacement(const std::vector<std::vector<char>>& grid,
                             const PlayerSnapshot& player,
-                            bool allowSkip);
-    void drawGameOverOverlay(const std::vector<FinalScoreEntry>& scores) const;
+                            bool allowSkip,
+                            const std::vector<std::vector<LGBonus>>& bonuses);
+    bool drawGameOverOverlay(const std::vector<FinalScoreEntry>& scores,
+                             const std::string& ruleText,
+                             bool allowRestart) const;
     Rectangle boardArea() const;
     bool canPlaceLocally(int x, int y, const std::vector<std::vector<int>>& tileShape, char playerSymbol, const std::vector<std::vector<char>>& grid) const;
     bool canPlaceStone(int x, int y, const std::vector<std::vector<char>>& grid) const;
@@ -161,6 +172,12 @@ private:
                                          bool escapePressed) const;
     void fulfillDialogResult(const DialogRenderResult& result, DialogKind kind);
     Color colorForSymbol(char symbol) const;
+    Color colorForBonus(LGBonus bonus) const;
+    void drawCellBase(float x, float y, char cellValue) const;
+    void drawBonusIcon(float x, float y, LGBonus bonus) const;
+    void loadTextures();
+    void unloadTextures();
+    void signalRestart();
     void drawTilePreview(const std::vector<std::vector<int>>& tileShape, int originX, int originY) const;
     static std::vector<std::vector<int>> rotateClockwise(const std::vector<std::vector<int>>& shape);
     static std::vector<std::vector<int>> rotateCounterClockwise(const std::vector<std::vector<int>>& shape);
@@ -177,9 +194,11 @@ private:
     mutable std::mutex stateMutex;
     std::condition_variable placementCv;
     std::condition_variable dialogCv;
+    std::condition_variable restartCv;
 
     Mode mode;
     std::vector<std::vector<char>> gridSnapshot;
+    std::vector<std::vector<LGBonus>> bonusSnapshot;
     PlayerSnapshot playerSnapshot;
     std::vector<std::vector<int>> currentTileSnapshot;
     std::vector<std::vector<int>> nextTileSnapshot;
@@ -189,9 +208,18 @@ private:
     StoneState stone;
     DialogState dialog;
     bool gameOverActive{false};
+    bool restartButtonActive{false};
+    bool restartPressed{false};
+    std::string victoryRuleText;
     std::vector<FinalScoreEntry> finalScores;
     std::string feedbackMessage;
     float feedbackTimer;
+    Texture2D grassTexture{};
+    Texture2D stoneTexture{};
+    Texture2D bonusCouponTexture{};
+    Texture2D bonusStoneTexture{};
+    Texture2D bonusRobberyTexture{};
+    bool texturesLoaded{false};
 };
 
 #endif // RAYLIB_RENDERER_H

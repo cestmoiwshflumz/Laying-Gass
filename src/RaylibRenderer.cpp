@@ -2,18 +2,28 @@
 #include <algorithm>
 #include <cmath>
 
-std::vector<std::vector<int>> bonusSnapshot;
+namespace {
+const char* bonusLabel(LGBonus bonus) {
+    switch (bonus) {
+        case LGBonus::Coupon:
+            return "E";
+        case LGBonus::Stone:
+            return "S";
+        case LGBonus::Robbery:
+            return "R";
+        default:
+            return "";
+    }
+}
 
-struct ConfirmBox {
-    bool active = false;
-    std::string question;
-    std::string yes = "Oui";
-    std::string no = "Non";
-    bool answered = false;
-    bool answerYes = false;
-
-} confirm;
-
+int squareSideFromArea(int area) {
+    if (area <= 0) {
+        return -1;
+    }
+    const int side = static_cast<int>(std::sqrt(static_cast<double>(area)) + 0.5);
+    return (side > 0 && side * side == area) ? side : -1;
+}
+}
 
 RaylibRenderer::RaylibRenderer(int boardSize, int cellSize)
         : boardSize(boardSize),
@@ -27,15 +37,15 @@ RaylibRenderer::RaylibRenderer(int boardSize, int cellSize)
           hasNextTile(false),
           feedbackTimer(0.0f) {
     gridSnapshot.assign(boardSize, std::vector<char>(boardSize, '.'));
+    bonusSnapshot.assign(boardSize, std::vector<LGBonus>(boardSize, LGBonus::None));
     renderThread = std::thread(&RaylibRenderer::renderLoop, this);
-    bonusSnapshot.assign(boardSize, std::vector<int>(boardSize, 0));
-
 }
 
 RaylibRenderer::~RaylibRenderer() {
     running = false;
     placementCv.notify_all();
     dialogCv.notify_all();
+    restartCv.notify_all();
     if (renderThread.joinable()) {
         renderThread.join();
     }
@@ -45,12 +55,17 @@ bool RaylibRenderer::isReady() const {
     return windowReady.load();
 }
 
+bool RaylibRenderer::isRunning() const {
+    return running.load();
+}
+
 void RaylibRenderer::updateState(const Board& board,
                                  const Player& currentPlayer,
                                  const Tile* currentTile,
                                  const Tile* nextTile) {
     std::lock_guard<std::mutex> lock(stateMutex);
     gridSnapshot = board.getGrid();
+    bonusSnapshot = board.getBonuses();
     playerSnapshot.name = currentPlayer.getName();
     playerSnapshot.symbol = currentPlayer.getSymbol();
     playerSnapshot.score = currentPlayer.getScore();
@@ -75,12 +90,6 @@ void RaylibRenderer::updateState(const Board& board,
     }
 }
 
-void RaylibRenderer::setBonusGrid(const std::vector<std::vector<int>>& grid) {
-    std::lock_guard<std::mutex> lock(stateMutex);
-    bonusSnapshot = grid;
-}
-
-
 RaylibRenderer::PlacementResult RaylibRenderer::requestTilePlacement(const Board& board,
                                                                      const Player& currentPlayer,
                                                                      const Tile& tile,
@@ -89,6 +98,7 @@ RaylibRenderer::PlacementResult RaylibRenderer::requestTilePlacement(const Board
     {
         std::lock_guard<std::mutex> lock(stateMutex);
         gridSnapshot = board.getGrid();
+        bonusSnapshot = board.getBonuses();
         playerSnapshot.name = currentPlayer.getName();
         playerSnapshot.symbol = currentPlayer.getSymbol();
         playerSnapshot.score = currentPlayer.getScore();
@@ -150,6 +160,7 @@ RaylibRenderer::StoneResult RaylibRenderer::requestStonePlacement(const Board& b
     {
         std::lock_guard<std::mutex> lock(stateMutex);
         gridSnapshot = board.getGrid();
+        bonusSnapshot = board.getBonuses();
         playerSnapshot.name = currentPlayer.getName();
         playerSnapshot.symbol = currentPlayer.getSymbol();
         playerSnapshot.score = currentPlayer.getScore();
@@ -178,6 +189,16 @@ RaylibRenderer::StoneResult RaylibRenderer::requestStonePlacement(const Board& b
     stone.resultReady = false;
     mode = Mode::Idle;
     return result;
+}
+
+bool RaylibRenderer::waitForRestart() {
+    if (!windowReady.load()) {
+        return false;
+    }
+
+    std::unique_lock<std::mutex> lock(stateMutex);
+    restartCv.wait(lock, [&]() { return !running.load() || restartPressed; });
+    return restartPressed;
 }
 
 bool RaylibRenderer::confirmAction(const std::string& title,
@@ -295,12 +316,14 @@ void RaylibRenderer::renderLoop() {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(width, height, "Laying Grass - Interface");
     SetTargetFPS(60);
+    loadTextures();
     windowReady = true;
 
     while (running.load()) {
         if (WindowShouldClose()) {
             running = false;
             placementCv.notify_all();
+            dialogCv.notify_all();
             break;
         }
 
@@ -313,10 +336,15 @@ void RaylibRenderer::renderLoop() {
         bool localGameOver = false;
         std::vector<FinalScoreEntry> localFinalScores;
         Mode localMode;
+        DialogState localDialog;
+        std::vector<std::vector<LGBonus>> localBonuses;
+        std::string localVictoryRule;
+        bool localRestartActive = false;
 
         {
             std::lock_guard<std::mutex> lock(stateMutex);
             localGrid = gridSnapshot;
+            localBonuses = bonusSnapshot;
             localPlayer = playerSnapshot;
             localCurrentPreview = currentTileSnapshot;
             localNextPreview = nextTileSnapshot;
@@ -325,21 +353,36 @@ void RaylibRenderer::renderLoop() {
             localMode = mode;
             localGameOver = gameOverActive;
             localFinalScores = finalScores;
+            localDialog = dialog;
+            localVictoryRule = victoryRuleText;
+            localRestartActive = restartButtonActive;
         }
 
         BeginDrawing();
         ClearBackground(RAYWHITE);
 
-        if (localMode == Mode::Placement && !localPlacementShape.empty()) {
-            drawPlacement(localGrid, localPlayer, localPlacementShape, localNextPreview, localAllowSwap);
+        if (localDialog.active) {
+            drawIdle(localGrid, localPlayer, localCurrentPreview, localNextPreview, localBonuses);
+        } else if (localMode == Mode::Placement && !localPlacementShape.empty()) {
+            drawPlacement(localGrid, localPlayer, localPlacementShape, localNextPreview, localAllowSwap, localBonuses);
         } else if (localMode == Mode::Stone) {
-            drawStonePlacement(localGrid, localPlayer, true);
+            drawStonePlacement(localGrid, localPlayer, true, localBonuses);
         } else {
-            drawIdle(localGrid, localPlayer, localCurrentPreview, localNextPreview);
+            drawIdle(localGrid, localPlayer, localCurrentPreview, localNextPreview, localBonuses);
         }
 
+        bool restartClicked = false;
         if (localGameOver) {
-            drawGameOverOverlay(localFinalScores);
+            restartClicked = drawGameOverOverlay(localFinalScores, localVictoryRule, localRestartActive);
+        }
+
+        DialogRenderResult dialogResult;
+        if (localDialog.active) {
+            dialogResult = drawDialogOverlay(
+                    localDialog,
+                    GetMousePosition(),
+                    IsMouseButtonPressed(MOUSE_BUTTON_LEFT),
+                    IsKeyPressed(KEY_ESCAPE));
         }
 
         if (feedbackTimer > 0.0f && !feedbackMessage.empty()) {
@@ -351,38 +394,18 @@ void RaylibRenderer::renderLoop() {
             feedbackTimer -= GetFrameTime();
         }
 
-        if (confirm.active) {
-            const int w = GetScreenWidth(), h = GetScreenHeight();
-            DrawRectangle(0, 0, w, h, ColorAlpha(BLACK, 0.55f));
-            const int bw = 520, bh = 160;
-            const int bx = (w - bw) / 2, by = (h - bh) / 2;
-            DrawRectangleRounded({(float)bx,(float)by,(float)bw,(float)bh}, 0.08f, 8, RAYWHITE);
-            DrawText(confirm.question.c_str(), bx + 20, by + 20, 22, BLACK);
+        EndDrawing();
 
-            Rectangle yesBtn{(float)(bx + 60), (float)(by + bh - 60), 160.0f, 36.0f};
-            Rectangle noBtn {(float)(bx + bw - 220), (float)(by + bh - 60), 160.0f, 36.0f};
-            Vector2 m = GetMousePosition();
-            bool hYes = CheckCollisionPointRec(m, yesBtn);
-            bool hNo  = CheckCollisionPointRec(m, noBtn);
-            DrawRectangleRounded(yesBtn, 0.2f, 8, hYes ? DARKGREEN : GREEN);
-            DrawRectangleRounded(noBtn,  0.2f, 8, hNo  ? MAROON    : RED);
-            DrawText(confirm.yes.c_str(), (int)yesBtn.x + 16, (int)yesBtn.y + 8, 20, RAYWHITE);
-            DrawText(confirm.no.c_str(),  (int)noBtn.x  + 16, (int)noBtn.y  + 8, 20, RAYWHITE);
-
-            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-                if (hYes || hNo) {
-                    std::lock_guard<std::mutex> lock(stateMutex);
-                    confirm.answerYes = hYes;
-                    confirm.answered  = true;
-                    placementCv.notify_one();
-                }
-            }
+        if (restartClicked) {
+            signalRestart();
         }
 
-
-        EndDrawing();
+        if (localDialog.active && dialogResult.completed) {
+            fulfillDialogResult(dialogResult, localDialog.kind);
+        }
     }
 
+    unloadTextures();
     windowReady = false;
     CloseWindow();
 }
@@ -390,7 +413,8 @@ void RaylibRenderer::renderLoop() {
 void RaylibRenderer::drawIdle(const std::vector<std::vector<char>>& grid,
                               const PlayerSnapshot& player,
                               const std::vector<std::vector<int>>& currentTile,
-                              const std::vector<std::vector<int>>& nextTile) const {
+                              const std::vector<std::vector<int>>& nextTile,
+                              const std::vector<std::vector<LGBonus>>& bonuses) const {
     const Rectangle boardRect = boardArea();
 
     for (int row = 0; row < boardSize; ++row) {
@@ -402,15 +426,19 @@ void RaylibRenderer::drawIdle(const std::vector<std::vector<char>>& grid,
                     static_cast<float>(cellSize),
                     static_cast<float>(cellSize)};
 
-            Color fill = LIGHTGRAY;
-            if (cellValue == '#') {
-                fill = BLACK;
-            } else if (cellValue != '.') {
-                fill = colorForSymbol(cellValue);
+            drawCellBase(rect.x, rect.y, cellValue);
+            if (cellValue != '.' && cellValue != '#') {
+                DrawRectangleLinesEx(rect, 2.0f, colorForSymbol(cellValue));
+            } else {
+                DrawRectangleLinesEx(rect, 1.0f, DARKGRAY);
             }
 
-            DrawRectangleRec(rect, fill);
-            DrawRectangleLinesEx(rect, 1.0f, DARKGRAY);
+            if (row < static_cast<int>(bonuses.size()) && col < static_cast<int>(bonuses[row].size())) {
+                const LGBonus bonus = bonuses[row][col];
+                if (bonus != LGBonus::None) {
+                    drawBonusIcon(rect.x, rect.y, bonus);
+                }
+            }
         }
     }
 
@@ -441,7 +469,8 @@ void RaylibRenderer::drawPlacement(const std::vector<std::vector<char>>& grid,
                                    const PlayerSnapshot& player,
                                    std::vector<std::vector<int>> tileShape,
                                    const std::vector<std::vector<int>>& nextTilePreview,
-                                   bool allowSwap) {
+                                   bool allowSwap,
+                                   const std::vector<std::vector<LGBonus>>& bonuses) {
     const Rectangle boardRect = boardArea();
     const Vector2 mouse = GetMousePosition();
     const int hoveredCol = static_cast<int>((mouse.x - boardRect.x) / cellSize);
@@ -463,15 +492,19 @@ void RaylibRenderer::drawPlacement(const std::vector<std::vector<char>>& grid,
                     static_cast<float>(cellSize),
                     static_cast<float>(cellSize)};
 
-            Color fill = LIGHTGRAY;
-            if (cellValue == '#') {
-                fill = BLACK;
-            } else if (cellValue != '.') {
-                fill = colorForSymbol(cellValue);
+            drawCellBase(rect.x, rect.y, cellValue);
+            if (cellValue != '.' && cellValue != '#') {
+                DrawRectangleLinesEx(rect, 2.0f, colorForSymbol(cellValue));
+            } else {
+                DrawRectangleLinesEx(rect, 1.0f, DARKGRAY);
             }
 
-            DrawRectangleRec(rect, fill);
-            DrawRectangleLinesEx(rect, 1.0f, DARKGRAY);
+            if (row < static_cast<int>(bonuses.size()) && col < static_cast<int>(bonuses[row].size())) {
+                const LGBonus bonus = bonuses[row][col];
+                if (bonus != LGBonus::None) {
+                    drawBonusIcon(rect.x, rect.y, bonus);
+                }
+            }
         }
     }
 
@@ -583,7 +616,8 @@ void RaylibRenderer::drawPlacement(const std::vector<std::vector<char>>& grid,
 
 void RaylibRenderer::drawStonePlacement(const std::vector<std::vector<char>>& grid,
                                         const PlayerSnapshot& player,
-                                        bool allowSkip) {
+                                        bool allowSkip,
+                                        const std::vector<std::vector<LGBonus>>& bonuses) {
     const Rectangle boardRect = boardArea();
     const Vector2 mouse = GetMousePosition();
     const int hoveredCol = static_cast<int>((mouse.x - boardRect.x) / cellSize);
@@ -605,15 +639,19 @@ void RaylibRenderer::drawStonePlacement(const std::vector<std::vector<char>>& gr
                     static_cast<float>(cellSize),
                     static_cast<float>(cellSize)};
 
-            Color fill = LIGHTGRAY;
-            if (cellValue == '#') {
-                fill = BLACK;
-            } else if (cellValue != '.') {
-                fill = colorForSymbol(cellValue);
+            drawCellBase(rect.x, rect.y, cellValue);
+            if (cellValue != '.' && cellValue != '#') {
+                DrawRectangleLinesEx(rect, 2.0f, colorForSymbol(cellValue));
+            } else {
+                DrawRectangleLinesEx(rect, 1.0f, DARKGRAY);
             }
 
-            DrawRectangleRec(rect, fill);
-            DrawRectangleLinesEx(rect, 1.0f, DARKGRAY);
+            if (row < static_cast<int>(bonuses.size()) && col < static_cast<int>(bonuses[row].size())) {
+                const LGBonus bonus = bonuses[row][col];
+                if (bonus != LGBonus::None) {
+                    drawBonusIcon(rect.x, rect.y, bonus);
+                }
+            }
         }
     }
 
@@ -669,6 +707,74 @@ void RaylibRenderer::drawStonePlacement(const std::vector<std::vector<char>>& gr
             feedbackTimer = 1.0f;
         }
     }
+}
+
+void RaylibRenderer::drawCellBase(float x, float y, char cellValue) const {
+    const Rectangle dest{x, y, static_cast<float>(cellSize), static_cast<float>(cellSize)};
+    const bool isPlayerCell = (cellValue != '.' && cellValue != '#');
+
+    if (isPlayerCell && texturesLoaded && grassTexture.id > 0) {
+        const Rectangle src{0.0f, 0.0f, static_cast<float>(grassTexture.width), static_cast<float>(grassTexture.height)};
+        DrawTexturePro(grassTexture, src, dest, Vector2{0.0f, 0.0f}, 0.0f, WHITE);
+        return;
+    }
+
+    if (cellValue == '#' && texturesLoaded && stoneTexture.id > 0) {
+        const Rectangle src{0.0f, 0.0f, static_cast<float>(stoneTexture.width), static_cast<float>(stoneTexture.height)};
+        DrawTexturePro(stoneTexture, src, dest, Vector2{0.0f, 0.0f}, 0.0f, WHITE);
+        return;
+    }
+
+    const Color fallback = (cellValue == '#') ? DARKGRAY : LIGHTGRAY;
+    DrawRectangleRec(dest, fallback);
+}
+
+void RaylibRenderer::drawBonusIcon(float x, float y, LGBonus bonus) const {
+    if (bonus == LGBonus::None) {
+        return;
+    }
+
+    const Texture2D* texture = nullptr;
+    if (texturesLoaded) {
+        switch (bonus) {
+            case LGBonus::Coupon:
+                if (bonusCouponTexture.id > 0) texture = &bonusCouponTexture;
+                break;
+            case LGBonus::Stone:
+                if (bonusStoneTexture.id > 0) texture = &bonusStoneTexture;
+                break;
+            case LGBonus::Robbery:
+                if (bonusRobberyTexture.id > 0) texture = &bonusRobberyTexture;
+                break;
+            default:
+                break;
+        }
+    }
+
+    const float cell = static_cast<float>(cellSize);
+    const float size = std::max(12.0f, cell * 0.65f);
+    const Rectangle dest{
+            x + (cell - size) * 0.5f,
+            y + (cell - size) * 0.5f,
+            size,
+            size};
+
+    if (texture) {
+        const Rectangle src{0.0f, 0.0f, static_cast<float>(texture->width), static_cast<float>(texture->height)};
+        DrawTexturePro(*texture, src, dest, Vector2{0.0f, 0.0f}, 0.0f, WHITE);
+        return;
+    }
+
+    const float centerX = dest.x + dest.width / 2.0f;
+    const float centerY = dest.y + dest.height / 2.0f;
+    DrawCircleV(Vector2{centerX, centerY}, dest.width / 2.5f, ColorAlpha(colorForBonus(bonus), 0.85f));
+    const char* label = bonusLabel(bonus);
+    const int textWidth = MeasureText(label, 14);
+    DrawText(label,
+             static_cast<int>(centerX - textWidth / 2.0f),
+             static_cast<int>(centerY - 7.0f),
+             14,
+             RAYWHITE);
 }
 
 Rectangle RaylibRenderer::boardArea() const {
@@ -962,27 +1068,26 @@ void RaylibRenderer::fulfillDialogResult(const DialogRenderResult& result, Dialo
     dialogCv.notify_all();
 }
 
-void RaylibRenderer::showGameOver(const std::vector<Player>& players) {
+void RaylibRenderer::showGameOver(const std::vector<FinalScoreEntry>& scores,
+                                  const std::string& victoryRule) {
     std::lock_guard<std::mutex> lock(stateMutex);
-    finalScores.clear();
-    finalScores.reserve(players.size());
-    for (const auto& player : players) {
-        finalScores.push_back(FinalScoreEntry{
-                player.getName(),
-                player.getSymbol(),
-                player.getScore()
-        });
-    }
-    std::sort(finalScores.begin(), finalScores.end(), [](const FinalScoreEntry& lhs, const FinalScoreEntry& rhs) {
-        return lhs.score > rhs.score;
-    });
+    finalScores = scores;
+    victoryRuleText = victoryRule;
     gameOverActive = true;
+    restartButtonActive = true;
+    restartPressed = false;
 }
 
-void RaylibRenderer::drawGameOverOverlay(const std::vector<FinalScoreEntry>& scores) const {
+bool RaylibRenderer::drawGameOverOverlay(const std::vector<FinalScoreEntry>& scores,
+                                         const std::string& ruleText,
+                                         bool allowRestart) const {
     if (scores.empty()) {
-        return;
+        return false;
     }
+
+    bool restartClicked = false;
+    const Vector2 mouse = GetMousePosition();
+    const bool mouseClick = IsMouseButtonPressed(MOUSE_BUTTON_LEFT);
 
     const int width = GetScreenWidth();
     const int height = GetScreenHeight();
@@ -992,35 +1097,159 @@ void RaylibRenderer::drawGameOverOverlay(const std::vector<FinalScoreEntry>& sco
     const int panelY = margin;
     const int panelW = width - margin * 2;
     const int panelH = height - margin * 2;
-    DrawRectangle(panelX, panelY, panelW, panelH, ColorAlpha(DARKGRAY, 0.9f));
+    DrawRectangle(panelX, panelY, panelW, panelH, ColorAlpha(DARKGRAY, 0.92f));
     DrawRectangleLines(panelX, panelY, panelW, panelH, RAYWHITE);
 
     DrawText("Fin de partie", panelX + 20, panelY + 20, 32, RAYWHITE);
-    DrawText("Classement :", panelX + 20, panelY + 70, 22, RAYWHITE);
+    if (!ruleText.empty()) {
+        DrawText(ruleText.c_str(), panelX + 20, panelY + 60, 20, RAYWHITE);
+    }
 
-    int y = panelY + 110;
+    std::string winnerNames;
+    for (const auto& entry : scores) {
+        if (!entry.winner) {
+            continue;
+        }
+        if (!winnerNames.empty()) {
+            winnerNames += ", ";
+        }
+        winnerNames += entry.name;
+    }
+    if (!winnerNames.empty()) {
+        DrawText(TextFormat("Vainqueur%s : %s",
+                            (winnerNames.find(',') == std::string::npos) ? "" : "s",
+                            winnerNames.c_str()),
+                 panelX + 20,
+                 panelY + 95,
+                 22,
+                 GOLD);
+    }
+
+    DrawText("Classement :", panelX + 20, panelY + 135, 22, RAYWHITE);
+    const int headerY = panelY + 170;
+    const int colName = panelX + 40;
+    const int colTerritory = panelX + panelW / 2 - 60;
+    const int colSquare = panelX + panelW - 200;
+
+    DrawText("Joueur", colName, headerY, 18, RAYWHITE);
+    DrawText("Territoire", colTerritory, headerY, 18, RAYWHITE);
+    DrawText("Plus grand carre", colSquare, headerY, 18, RAYWHITE);
+
+    int y = headerY + 30;
     int rank = 1;
     for (const auto& entry : scores) {
-        DrawText(TextFormat("%d. %s (%c) - %d pts",
+        const Color rowColor = entry.winner ? GOLD : RAYWHITE;
+        DrawText(TextFormat("%d. %s (%c)",
                             rank,
                             entry.name.c_str(),
-                            entry.symbol,
-                            entry.score),
-                 panelX + 40,
+                            entry.symbol),
+                 colName,
                  y,
                  20,
-                 RAYWHITE);
-        y += 28;
+                 rowColor);
+        DrawText(TextFormat("%d cases", entry.territory),
+                 colTerritory,
+                 y,
+                 20,
+                 rowColor);
+        const int squareSide = squareSideFromArea(entry.largestSquare);
+        const char* squareLabel = (squareSide > 0)
+                                  ? TextFormat("%dx%d", squareSide, squareSide)
+                                  : TextFormat("%d cases", entry.largestSquare);
+        DrawText(squareLabel,
+                 colSquare,
+                 y,
+                 20,
+                 rowColor);        y += 32;
         ++rank;
     }
 
-    DrawText("Fermez la fenetre pour quitter.", panelX + 20, panelY + panelH - 40, 18, RAYWHITE);
+    if (allowRestart) {
+        const Rectangle restartBtn{
+                static_cast<float>(panelX + panelW - 220),
+                static_cast<float>(panelY + panelH - 70),
+                180.0f,
+                44.0f};
+        const bool hovered = CheckCollisionPointRec(mouse, restartBtn);
+        DrawRectangleRounded(restartBtn, 0.2f, 8, hovered ? DARKGREEN : GREEN);
+        const char* label = "Rejouer";
+        const int textWidth = MeasureText(label, 20);
+        DrawText(label,
+                 static_cast<int>(restartBtn.x + (restartBtn.width - textWidth) / 2.0f),
+                 static_cast<int>(restartBtn.y + 10),
+                 20,
+                 RAYWHITE);
+        if (hovered && mouseClick) {
+            restartClicked = true;
+        }
+    } else {
+        DrawText("Fermez la fenetre pour quitter.", panelX + 20, panelY + panelH - 60, 18, RAYWHITE);
+    }
+
+    return restartClicked;
 }
 
 Color RaylibRenderer::colorForSymbol(char symbol) const {
     const int index = std::max(0, symbol - 'A');
     const float hue = std::fmod(static_cast<float>(index) * 45.0f, 360.0f);
     return ColorFromHSV(hue, 0.65f, 0.85f);
+}
+
+Color RaylibRenderer::colorForBonus(LGBonus bonus) const {
+    switch (bonus) {
+        case LGBonus::Coupon:
+            return ORANGE;
+        case LGBonus::Stone:
+            return DARKGRAY;
+        case LGBonus::Robbery:
+            return PURPLE;
+        default:
+            return WHITE;
+    }
+}
+
+void RaylibRenderer::loadTextures() {
+    if (texturesLoaded) {
+        return;
+    }
+
+    grassTexture = LoadTexture("../ressources/grass.jpg");
+    stoneTexture = LoadTexture("../ressources/placed_stone.jpg");
+    bonusCouponTexture = LoadTexture("../ressources/powerup_exchange.jpg");
+    bonusStoneTexture = LoadTexture("../ressources/powerup_stone.jpg");
+    bonusRobberyTexture = LoadTexture("../ressources/powerup_steal.jpg");
+    texturesLoaded = true;
+}
+
+void RaylibRenderer::unloadTextures() {
+    if (!texturesLoaded) {
+        return;
+    }
+
+    auto release = [](Texture2D& texture) {
+        if (texture.id > 0) {
+            UnloadTexture(texture);
+            texture = {};
+        }
+    };
+
+    release(grassTexture);
+    release(stoneTexture);
+    release(bonusCouponTexture);
+    release(bonusStoneTexture);
+    release(bonusRobberyTexture);
+    texturesLoaded = false;
+}
+
+void RaylibRenderer::signalRestart() {
+    std::lock_guard<std::mutex> lock(stateMutex);
+    if (!restartButtonActive || restartPressed) {
+        return;
+    }
+    restartPressed = true;
+    restartButtonActive = false;
+    gameOverActive = false;
+    restartCv.notify_all();
 }
 
 void RaylibRenderer::drawTilePreview(const std::vector<std::vector<int>>& tileShape, int originX, int originY) const {
@@ -1082,28 +1311,3 @@ std::vector<std::vector<int>> RaylibRenderer::flipHorizontal(const std::vector<s
     return flipped;
 }
 
-void RaylibRenderer::flash(const std::string& text, float seconds) {
-    std::lock_guard<std::mutex> lock(stateMutex);
-    feedbackMessage = text;
-    feedbackTimer   = seconds;
-}
-
-bool RaylibRenderer::confirmYesNo(const std::string& question, const char* yesLabel, const char* noLabel) {
-    {
-        std::lock_guard<std::mutex> lock(stateMutex);
-        confirm.active    = true;
-        confirm.question  = question;
-        confirm.yes       = yesLabel ? yesLabel : "Oui";
-        confirm.no        = noLabel  ? noLabel  : "Non";
-        confirm.answered  = false;
-        mode              = Mode::Idle; // let overlay render atop normal screen
-    }
-
-    std::unique_lock<std::mutex> lock(stateMutex);
-    placementCv.wait(lock, [&](){ return !running.load() || confirm.answered; });
-
-    bool result = confirm.answerYes;
-    confirm.active = false;
-    confirm.answered = false;
-    return result;
-}
